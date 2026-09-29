@@ -58,7 +58,7 @@ app.put('/api/items/:id', (req, res) => {
 	
 	const {name} = req.body;
 	if(!name) {
-		return res.status(404).json({ error: "nome não encontrado"});
+		return res.status(400).json({ error: "o campo name é obrigatorio"});
 	}
 	
 	item.name = name;
