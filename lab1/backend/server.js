@@ -18,7 +18,7 @@ const items = [
 
 app.get('/api/items', (req, res) => {
 	const { name } = req.query;
-	
+
 	if(!name) {
 		return res.json(items);
 	}
