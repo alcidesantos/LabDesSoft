@@ -17,7 +17,15 @@ const items = [
 ];
 
 app.get('/api/items', (req, res) => {
-	res.json(items);
+	const { name } = req.query;
+	
+	if(!name) {
+		return res.json(items);
+	}
+
+	const filteredItems = items.filter(item => item.name.toLowerCase().includes(name.toLowerCase()));
+
+	res.json(filteredItems);
 });
 
 app.get(`/api/items/:id`, (req, res) => {
