@@ -33,9 +33,8 @@ docker compose exec app npm install <pacote>
 
 ## Declaração de utilização de IA
 
-- Link para interacção com IA: https://chat.deepseek.com/share/dtew6et16uf6p0hgtn
-- Usei IA para perceber as opções de arquitectura e como usar o git
-- Necessitei de usar IA porque algumas partes da exposição da aula foram algo pobres. 
+- Link para interacção com IA: https://chat.deepseek.com/share/dtew6et16uf6p0hgtn onde a usei para perceber as opções de arquitectura e como usar o git
+- Link para interacção com IA: https://chat.deepseek.com/share/ntgzfrh82orfp1bfc9 onde a usei para aclarar o código dado em aula
 
 ## Comentários livres
 
