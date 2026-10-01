@@ -86,6 +86,11 @@ app.get('/api/items', (req, res) => {
 
 app.get(`/api/items/:id`, (req, res) => {
 	const id = Number(req.params.id);
+
+	if(isNaN(id) || id < 1) {
+		return res.status(400).json({ error: 'O parâmetro id deve ser um número válido' });
+	}
+
 	const item = items.find(item => item.id === id);
 
 	if(!item) {

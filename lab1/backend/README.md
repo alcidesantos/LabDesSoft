@@ -35,6 +35,7 @@ docker compose exec app npm install <pacote>
 
 - Link para interacção com IA: https://chat.deepseek.com/share/dtew6et16uf6p0hgtn onde a usei para perceber as opções de arquitectura e como usar o git
 - Link para interacção com IA: https://chat.deepseek.com/share/ntgzfrh82orfp1bfc9 onde a usei para aclarar o código dado em aula
+- Muitas vezes aceitei o autocomplete do VSC, que é produzido por IA
 
 ## Comentários livres
 
