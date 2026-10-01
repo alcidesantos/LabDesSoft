@@ -102,11 +102,20 @@ app.get(`/api/items/:id`, (req, res) => {
 
 // usar com POST em vez de GET para criar um novo item
 app.post('/api/items', (req, res) => {
-	const {name} = req.body;
 	
-	if(!name ) {
-		return res.status(400).json({error: 'o campo name é obrigatorio'})
+	if(!req.body || Object.keys(req.body).length === 0) {
+		return res.status(400).json({error: 'O corpo da requisição não pode estar vazio'});
 	}
+
+	if(typeof req.body.name !== 'string') {
+		return res.status(400).json({error: 'O campo name deve ser uma string'});
+	}
+
+	if(req.body.name.trim() === '') {
+		return res.status(400).json({error: 'O campo name não pode estar vazio'});
+	}
+
+	const {name} = req.body || {};
 	
 	const newItem = {
 		id: items.length ? Math.max(...items.map(item => item.id)) + 1: 1,
