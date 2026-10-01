@@ -128,15 +128,29 @@ app.post('/api/items', (req, res) => {
 
 app.put('/api/items/:id', (req, res) => {
 	const id = Number(req.params.id);
+
+	if(isNaN(id) || id < 1) {
+		return res.status(400).json({ error: 'O parâmetro id deve ser um número válido' });
+	}
+	
 	const item = items.find(item => item.id === id);
 	
 	if(!item) {
 		return res.status(404).json({ error: "item não encontrado"});
 	}
-	
-	const {name} = req.body;
-	if(!name) {
-		return res.status(400).json({ error: "o campo name é obrigatorio"});
+
+	if(!req.body || Object.keys(req.body).length === 0) {
+		return res.status(400).json({ error: "o corpo da requisição não pode estar vazio"});
+	}
+
+	const {name} = req.body || {};
+
+	if(typeof name !== 'string') {
+		return res.status(400).json({ error: "o campo name deve ser uma string"});
+	}
+
+	if(name.trim() === '') {
+		return res.status(400).json({ error: "o campo name não pode estar vazio"});
 	}
 	
 	item.name = name;
