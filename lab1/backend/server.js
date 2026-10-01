@@ -159,12 +159,18 @@ app.put('/api/items/:id', (req, res) => {
 
 app.delete('/api/items/:id', (req, res) => {
 	const id = Number(req.params.id);
-	const index = items.findIndex(item => item.id == id);
-	if(index == -1) {
+
+	if(isNaN(id) || id < 1) {
+		return res.status(400).json({ error: 'O parâmetro id deve ser um número válido' });
+	}
+
+	const item = items.find(item => item.id === id);
+
+	if(!item) {
 		return res.status(404).json({ error: 'Item não encontrado'});
 	}
-	
-	items.splice(index, 1);
+
+	items.splice(items.indexOf(item), 1);
 	
 	res.status(204).send();
 });
