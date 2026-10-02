@@ -36,9 +36,9 @@ docker compose exec app npm install <pacote>
 * Domínio: dominio
 * Campos:
   * cnt: inteiro
-  * unique: unique 
+  * unique: string unique 
   * estados: (estado1, estado2, estado3) 
-  * gerado: timestamp
+  * gerado: new Date()
 
 ## Declaração de utilização de IA
 
