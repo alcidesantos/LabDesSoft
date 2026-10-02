@@ -180,6 +180,9 @@ app.post('/api/items/*splat', (req, res) => {
 });
 
 app.put('/api/items/:id', (req, res) => {
+
+	console.log('Entradas recebidas:', req.body);
+
 	const id = Number(req.params.id);
 
 	if(isNaN(id) || id < 1) {
@@ -193,10 +196,16 @@ app.put('/api/items/:id', (req, res) => {
 	}
 
 	if(!req.body || Object.keys(req.body).length === 0) {
-		return res.status(400).json({ error: "o corpo da requisição não pode estar vazio"});
+		return res.status(400).json({ error: "O body não pode estar vazio"});
 	}
 
 	const {name} = req.body || {};
+
+	console.log('Nome recebido:', name);
+
+	if(typeof name === 'undefined') {
+		return res.status(400).json({ error: "o campo name é obrigatório"});
+	}
 
 	if(typeof name !== 'string') {
 		return res.status(400).json({ error: "o campo name deve ser uma string"});
