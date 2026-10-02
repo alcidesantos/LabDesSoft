@@ -237,6 +237,9 @@ app.delete('/api/items/:id', (req, res) => {
 	res.status(204).send();
 });
 
+app.delete('/api/items/', (req, res) => {
+	return res.status(404).json({ error: 'Não foi indicado um item para ser eliminado.'});
+});
 
 app.listen(port, () => {
   console.log(`API está a correr em http://localhost:${port}`);
