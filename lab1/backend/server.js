@@ -36,6 +36,9 @@ app.get('/api/items', (req, res) => {
 		if (sort !== 'name' && sort !== 'id') {
 			return res.status(400).json({ error: 'O parâmetro sort deve ser "name" ou "id"' });
 		}
+		if (!order) {
+			return res.status(400).json({ error: 'O parâmetro order é obrigatório quando sort é fornecido' });
+		}
 		if (typeof order !== 'string') {
 			return res.status(400).json({ error: 'O parâmetro order deve ser uma string (não pode estar duplicado)' });
 		}
@@ -51,10 +54,17 @@ app.get('/api/items', (req, res) => {
 	}
 
 	if (page !== undefined || limit !== undefined) {
-		if (typeof page !== 'string' || typeof limit !== 'string') {
-			return res.status(400).json({ error: 'Os parâmetros page e limit devem ser strings (não podem estar duplicados)' });
+		console.log('page:', page, typeof page);
+		console.log('limit:', limit, typeof limit);
+
+		if (typeof page !== 'string' && limit === undefined) {
+			return res.status(400).json({ error: 'O parâmetro page deve ser uma string (não pode estar duplicado)' });
 		}
-		if (isNaN(parseInt(page)) || isNaN(parseInt(limit))) {
+
+		if (typeof limit !== 'string' && page === undefined) {
+			return res.status(400).json({ error: 'O parâmetro limit deve ser uma string (não pode estar duplicado)' });
+		}
+		if ((isNaN(parseInt(page)) && page !== undefined) || (isNaN(parseInt(limit)) && limit !== undefined)) {
 			return res.status(400).json({ error: 'Os parâmetros page e limit devem ser números válidos' });
 		}
 		if (parseInt(page) < 1 || parseInt(limit) < 1) {
@@ -75,12 +85,9 @@ app.get('/api/items', (req, res) => {
 			items: paginatedResult
 		});
 
-		return res.status(200).json(items);
 	}
 
-	const filteredItems = items.filter(item => item.name.toLowerCase().includes(name.toLowerCase()));
-
-	res.status(200).json(filteredItems);
+	return res.status(200).json(result);
 });
 
 
