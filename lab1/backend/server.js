@@ -109,28 +109,69 @@ app.get(`/api/items/:id`, (req, res) => {
 
 // usar com POST em vez de GET para criar um novo item
 app.post('/api/items', (req, res) => {
-	
-	if(!req.body || Object.keys(req.body).length === 0) {
-		return res.status(400).json({error: 'O corpo da requisição não pode estar vazio'});
+	const entrou = req.body;
+	console.log('Entradas recebidas:', entrou);
+
+	const criados = [];
+
+	if (!entrou) {
+		return res.status(400).json({error: 'O body não pode estar vazio'});
 	}
 
-	if(typeof req.body.name !== 'string') {
-		return res.status(400).json({error: 'O campo name deve ser uma string'});
+	if (Array.isArray(entrou)) {
+
+		if (!Array.isArray(entrou) || entrou.length === 0) {
+			return res.status(400).json({error: 'O body deve ser um array não vazio'});
+		}
+
+		for (const item of entrou) {
+			const { name } = item;
+			if (typeof name === 'undefined') {
+				return res.status(400).json({error: 'O campo name é obrigatório em todos os itens'});
+			}
+
+			if (typeof name !== 'string') {
+				return res.status(400).json({error: 'O campo name deve ser uma string em todos os itens'});
+			}
+
+			if(name.trim() === '') {
+				return res.status(400).json({error: 'O campo name não pode estar vazio em nenhum item'});
+			}
+
+			const newItem = {
+				id: items.length ? Math.max(...items.map(item => item.id)) + 1: 1,
+				name
+			};
+			items.push(newItem);
+			criados.push(newItem);
+		}
+
+	} else {
+		if (Object.keys(entrou).length === 0) {
+			return res.status(400).json({error: 'O body não pode estar vazio'});
+		}
+
+		if (typeof entrou.name === 'undefined') {
+			return res.status(400).json({error: 'O campo name é obrigatório'});
+		}
+
+		if (typeof entrou.name !== 'string') {
+			return res.status(400).json({error: 'O campo name deve ser uma string'});
+		}
+
+		if(entrou.name.trim() === '') {
+			return res.status(400).json({error: 'O campo name não pode estar vazio'});
+		}
+
+		const newItem = {
+			id: items.length ? Math.max(...items.map(item => item.id)) + 1: 1,
+			name: entrou.name
+		};
+		items.push(newItem);
+		criados.push(newItem);
 	}
 
-	if(req.body.name.trim() === '') {
-		return res.status(400).json({error: 'O campo name não pode estar vazio'});
-	}
-
-	const {name} = req.body || {};
-	
-	const newItem = {
-		id: items.length ? Math.max(...items.map(item => item.id)) + 1: 1,
-		name
-	};
-	items.push(newItem);
-	
-	res.status(201).json(newItem);
+	res.status(201).json(criados);
 });
 
 
