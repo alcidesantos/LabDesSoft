@@ -31,6 +31,10 @@ docker compose exec app sh
 docker compose exec app npm install <pacote>
 ```
 
+## Versão node.js
+
+- v24.21.0
+
 ## Segundo Recurso
 
 * Domínio: dominio
