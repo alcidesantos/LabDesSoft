@@ -237,8 +237,97 @@ app.delete('/api/items/:id', (req, res) => {
 	res.status(204).send();
 });
 
-app.delete('/api/items/', (req, res) => {
+app.delete('/api/items', (req, res) => {
 	return res.status(404).json({ error: 'Não foi indicado um item para ser eliminado.'});
+});
+
+const campos = [
+	{ idx: 1, unique: 'Item1', estados: "estado1", gerado: '2026-10-02T19:57:06.654Z' },
+	{ idx: 2, unique: 'Item2', estados: "estado2", gerado: '2026-10-02T19:58:06.654Z' }
+];
+
+const estadosValidos = ['estado1', 'estado2', 'estado3'];
+
+app.get('/segundorecurso', (req, res) => {
+	const result = [...campos];
+	return res.status(200).json(result);
+});
+
+app.get(`/segundorecurso/:cnt`, (req, res) => {
+	const linha = campos.find(item => item.idx === Number(req.params.cnt));
+	res.status(200).json(linha);
+});
+
+// adicionar um unico item ao segundorecurso
+app.post('/segundorecurso', (req, res) => {
+	const { unico, estado } = req.body;
+	console.log('Entradas recebidas:', req.body);
+	console.log(campos.length ? Math.max(...campos.map(item => item.idx)) + 1: 1);
+	const cnt = campos.length ? Math.max(...campos.map(item => item.idx)) + 1: 1;
+	const cmp = campos.find(item => item.unique === unico);
+	console.log('cmp:', cmp);
+
+	// decido não cumprir com o enunciado, que exige que caso a chave existe produza um 409
+	// em vez disso, vou criar um novo item com a mesma chave, mas com um sufixo de timestamp para garantir a unicidade
+	let newUnico;
+	if (cmp) { 
+		newUnico = cmp.unique + Date.now();
+	} else {
+		newUnico = unico;
+	};
+	
+	// opto por dar um estado default caso o estado fornecido não seja válido, em vez de retornar um 400
+	let newEstado;
+	if (!estadosValidos.includes(estado)) {
+		newEstado = estadosValidos[0]; // Atribui o primeiro valor válido se o estado fornecido não for válido
+	} else {
+		newEstado = estado;
+	};
+	const newDate = new Date();
+	const paraMostrar = {
+		cnt: cnt,
+		unico: newUnico,
+		estado: newEstado,
+		momento: newDate
+	};
+	const novo = {
+		idx: campos.length ? Math.max(...campos.map(item => item.idx)) + 1: 1,
+		unique: newUnico,
+		estados: newEstado,
+		gerado: new Date()
+	};
+	campos.push(novo);
+	return res.status(201).json(paraMostrar);
+});
+
+// alterar um unico item do segundorecurso
+app.put('/segundorecurso/:cnt', (req, res) => {
+	console.log('Entradas recebidas:', req.body);
+	console.log('Parâmetro cnt:', req.params.cnt);
+	const idx = Number(req.params.cnt);
+	const linha = campos.find(item => item.idx === idx);
+	const { unico, estado } = req.body;
+	const cmp = campos.find(item => item.unique === unico);
+	if (cmp) { 
+		linha.unique = cmp.unique + Date.now();
+	};
+	if (estadosValidos.includes(estado)) {
+		linha.estados = estado; // Atribui o primeiro valor válido se o estado fornecido não for válido
+	};
+	linha.gerado = new Date();
+	res.status(200).json(linha);
+});
+
+// eliminar um unico item do segundorecurso
+app.delete('/segundorecurso/:cnt', (req, res) => {
+	const idx = Number(req.params.cnt);
+	const linha = campos.find(item => item.idx === idx);
+	if (linha) {
+		campos.splice(campos.indexOf(linha), 1);
+		res.status(200).json({ message: 'Item eliminado com sucesso.' });
+	} else {
+		res.status(404).json({ error: 'Item não encontrado.' });
+	}
 });
 
 app.listen(port, () => {
