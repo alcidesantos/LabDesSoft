@@ -133,6 +133,11 @@ app.post('/api/items', (req, res) => {
 	res.status(201).json(newItem);
 });
 
+
+app.post('/api/items/*splat', (req, res) => {
+	return res.status(400).json({ error: 'Não são aceites parâmetros no post. Usar o body para criar um novo item.'});
+});
+
 app.put('/api/items/:id', (req, res) => {
 	const id = Number(req.params.id);
 
