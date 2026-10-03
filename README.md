@@ -1,1 +1,1 @@
-Ver READEME de lab1
+Ver README de lab1
