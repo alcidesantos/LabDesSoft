@@ -1,8 +1,8 @@
 # Lab1 — Backend
+
 API Node.js/Express do Laboratório 1 da cadeira Laboratório de Desenvolvimento de Software.
 
 ## Requisitos
-
 - Docker Desktop (Windows) com integração WSL ativa
 - WSL
 
