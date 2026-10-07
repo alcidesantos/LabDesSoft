@@ -65,33 +65,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /api/items/{id}:
-    get:
-      summary: Obtém um item pelo ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            minimum: 1
-      responses:
-        '200':
-          description: Lista de itens (paginada ou total)
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/PaginatedItems'
-                  - type: array
-                    items:
-                      $ref: '#/components/schemas/Item'
-        '400':
-          description: Pedido inválido
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
 
 
     post:
@@ -124,6 +97,72 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+
+
+  /api/items/{id}:
+    get:
+      summary: Obtém um item pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Lista de itens (paginada ou total)
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/PaginatedItems'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Item'
+        '400':
+          description: Pedido inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Atualiza um item pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemInput'
+      responses:
+        '200':
+          description: Item atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          description: Pedido inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Item não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 
 
 
