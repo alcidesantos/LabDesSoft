@@ -66,7 +66,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-
     post:
       summary: Cria um novo item
       requestBody:
@@ -163,7 +162,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-
+    delete:
+      summary: Remove um item pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '204':
+          description: Item removido com sucesso
+        '400':
+          description: Pedido inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Item não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 
 
