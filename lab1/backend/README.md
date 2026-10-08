@@ -103,6 +103,10 @@ docker compose exec app npm install <pacote>
 | PUT | /segundorecurso/3 | { "unico": "RegistoAtualizado", "estado": "estado3" } | 200 | |
 | DELETE | /segundorecurso/3 | | 200 | 404 |
 
+## Adicionada Documentação 
+
+Documentação da API disponível em http://localhost:${port}/api-docs
+
 ## Comentários livres
 
 - Em /api/items optei por fazer um interface propositadamente complexo porque queria aprender; num ambiente real, não seria como foi feito aqui; no /segundorecurso/, pelo contrário, optei por ser bastante mais minimalista e não validar nada, mas por outro lado, não expor o nome interno dos campos.
@@ -113,3 +117,7 @@ docker compose exec app npm install <pacote>
 - Na realidade, como este exercicio só vale 2% da nota, é irrelevante a sua entrega. Só a teimosia e a vontade de aprender leva a seguir em frente. 
 - Penso que o enunciado do laboratório foi realizado por inteligência artificial. Não vem mal ao mundo por isso. Acontece que duvido que alguem tenha verificado se o que consta do enunciado foi de facto ensinado em aula. Refiro-me ao uso do postman, de como fazer testes de comparação de pedido esperado e pedido obtido. Não tem mal obrigar o aluno a investigar por conta própria determinado assunto. Mas penso que isso (necessidade de investigar por conta própria) deveria ser declarado no enunciado. Não porque seja complicado mas porque requer tempo adicional. Admito que esta situação decorra do facto de a cadeira estar a ser dada a duas mãos e não existir momento para de facto sincronizar o que cada mão fez. 
 - Não vou fazer o vídeo. Vale só 0,2% da nota final. Não justifica o esforço e não me ensina nada. 
+
+## Comntário livre II
+
+- Estou enormemente agradecido aos dois professores. A aula que se seguiu à realização e entrega do trabalho foi adicionou tudo aquilo que tinha faltado na primeira aula. Foi evidenciada humildade e capacidade de encaixe. 
