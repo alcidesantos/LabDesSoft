@@ -60,8 +60,8 @@ paths:
             minimum: 1
             default: 10       
       responses:
-        '201':
-          description: Item criado com sucesso
+        '200':
+          description: Items listados com sucesso
           content:
             application/json:
               schema:
@@ -349,7 +349,33 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-
+    delete:
+      tags:
+        - SegundoRecurso
+      summary: Remove o segundo recurso pelo CNT
+      operationId: deleteSegundoRecurso
+      parameters:
+        - name: cnt
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Recurso removido com sucesso
+        '400':
+          description: Pedido inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Recurso não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
 components:
   schemas:
     ItemInput:

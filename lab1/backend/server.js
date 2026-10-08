@@ -1,7 +1,12 @@
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
+const yaml = require('yamljs');
+const swaggerDocument = yaml.load('./openapi.yaml');
 const app = express();
 const port = 3000;
 app.use(express.json())
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/', (req, res) => {
   res.send('API está a funcionar, (teste 2)!');
@@ -332,4 +337,5 @@ app.delete('/segundorecurso/:cnt', (req, res) => {
 
 app.listen(port, () => {
   console.log(`API está a correr em http://localhost:${port}`);
+  console.log(`Documentação da API disponível em http://localhost:${port}/api-docs`);
 });
