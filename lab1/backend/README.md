@@ -121,3 +121,4 @@ Documentação da API disponível em http://localhost:${port}/api-docs
 ## Comntário livre II
 
 - Estou enormemente agradecido aos dois professores. A aula que se seguiu à realização e entrega do trabalho foi adicionou tudo aquilo que tinha faltado na primeira aula. Foi evidenciada humildade e capacidade de encaixe. 
+- Foi só no fim de ter feito o yaml que percebi a sua razão de ser: é extremamente útil pois é uma forma de disponibilizar a documentação da API, para que quem tiver que a usar saiba rapidamente como interagir com ela. Percebi que a documentação produzida vem só do ficheiro yaml, que na realidade pode estar noutro lado ou poderá inclusivamente não ter nada a ver com a API.
