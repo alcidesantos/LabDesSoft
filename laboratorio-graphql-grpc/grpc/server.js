@@ -9,7 +9,8 @@ const api = grpc.loadPackageDefinition(def).academico;
 function SubmeterNota(call, cb) {
   const r = call.request;
   if (!r.aluno_id || !r.disciplina_code || r.nota < 0 || r.nota > 20)
-    return cb(null, { sucesso: false, mensagem: 'Dados inválidos; nota deve estar entre 0 e 20.' });
+    return cb(null, { code: grpc.status.INVALID_ARGUMENT, mensagem: 'Dados inválidos; nota deve estar entre 0 e 20.' });
+  //  return cb(null, { sucesso: false, mensagem: 'Dados inválidos; nota deve estar entre 0 e 20.' });
   console.log('Nota recebida:', r);
   cb(null, { sucesso: true, mensagem: 'Nota registada (demonstração).' });
 }

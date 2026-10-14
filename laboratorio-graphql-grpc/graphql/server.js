@@ -50,6 +50,7 @@ const resolvers = {
     atualizarEmail: (_, { id, novoEmail }) => {
       const aluno = alunos.find(a => a.id === id);
       if (!aluno) throw new Error(`Aluno ${id} não encontrado`);
+      if (! /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(novoEmail)) throw new Error("Endereço de mail errado");
       aluno.email = novoEmail;
       return aluno;
     },
@@ -59,6 +60,7 @@ const resolvers = {
       };
       const curso = cursos.find(c => c.id === cursoId);
       if (!curso) throw new Error(`Curso ${cursoId} não encontrado`);
+      if (! /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Endereço de mail errado");
       const novoAluno = { id, nome, email, cursoId };
       alunos.push(novoAluno);
       return novoAluno;
