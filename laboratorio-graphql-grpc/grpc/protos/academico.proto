@@ -1,0 +1,35 @@
+syntax = "proto3";
+package academico;
+
+service AvaliacaoService {
+  rpc SubmeterNota (SubmeterNotaRequest) returns (SubmeterNotaResponse);
+  rpc ObterPerfil (PerfilRequest) returns (PerfilResponse);
+  rpc MonitorizarLocalizacao (BusRequest) returns (stream Coordenada);
+  rpc EnviarLogs (stream LogEntry) returns (LogSummary);
+  rpc CanalChat (stream Mensagem) returns (stream Mensagem);
+}
+
+message SubmeterNotaRequest {
+  string aluno_id = 1;
+  string disciplina_code = 2;
+  double nota = 3;
+}
+message SubmeterNotaResponse {
+  bool sucesso = 1;
+  string mensagem = 2;
+}
+message PerfilRequest { string nif = 1; }
+message PerfilResponse { string nome = 1; string departamento = 2; }
+message BusRequest { string autocarro_id = 1; }
+message Coordenada {
+  double latitude = 1;
+  double longitude = 2;
+  int64 timestamp = 3;
+}
+message LogEntry {
+  string origem = 1;
+  string mensagem = 2;
+  int64 timestamp = 3;
+}
+message LogSummary { int32 recebidos = 1; string mensagem = 2; }
+message Mensagem { string utilizador = 1; string texto = 2; }
