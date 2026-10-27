@@ -1,3 +1,10 @@
 *.txt
 *.pdf
 *.mp4
+salganhada/
+videos/
+
+laboratorio-graphql-grpc/
+node_modules/
+/package.json
+/package-lock.json
