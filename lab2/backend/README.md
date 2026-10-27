@@ -31,6 +31,21 @@ docker compose exec app sh
 docker compose exec app npm install <pacote>
 ```
 
+## Portas
+
+O servidor Node ouve na porta **3000** dentro do container (definido em `server.js`).
+
+O `docker-compose.yml` mapeia a porta **3001 do host** para a **3000 do container**:
+
+    ports:
+      - "3001:3000"
+
+- Acesso no browser: http://localhost:3001
+- Swagger: http://localhost:3001/api-docs
+- Os logs do container mostram 3000, porque é a porta interna.
+
+Esta separação permite correr o lab1 (porta 3000) e o lab2 (porta 3001) ao mesmo tempo.
+
 ## Versão node.js
 
 - v24.21.0
