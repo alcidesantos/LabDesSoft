@@ -1,0 +1,435 @@
+openapi: 3.1.0
+
+info:
+  title: Lab 2 API
+  version: 1.0.0
+  description: API para o Lab2.
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor local
+
+paths:
+  /:
+    get:
+      summary: Verifica que a API está a funcionar
+
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Verifica o estado da API
+
+  /api/items:
+    get:
+      tags:
+        - Items
+      summary: Lista todos os itens
+      operationId: listItems
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 1
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [name, id]
+        - name: order
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 10       
+      responses:
+        '200':
+          description: Items listados com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          description: Pedido inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags:
+        - Items
+      summary: Cria um ou varios novos itens
+      operationId: createItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/ItemInput'
+                - type: array
+                  minItems: 1
+                  items:
+                    $ref: '#/components/schemas/ItemInput'
+      responses:
+        '201':
+          description: Item criado com sucesso
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Item'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Item'
+        '400':
+          description: Pedido inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/items/{id}:
+    get:
+      tags:
+        - Items
+      summary: Obtém um item pelo ID
+      operationId: getItemById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Lista de itens (paginada ou total)
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/PaginatedItems'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Item'
+        '400':
+          description: Pedido inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Items
+      summary: Atualiza um item pelo ID
+      operationId: updateItem
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemInput'
+      responses:
+        '200':
+          description: Item atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          description: Pedido inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Item não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Items
+      summary: Remove um item pelo ID
+      operationId: deleteItem
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '204':
+          description: Item removido com sucesso
+        '400':
+          description: Pedido inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Item não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /segundorecurso:
+    get:
+      tags:
+        - SegundoRecurso
+      summary: Endpoint do segundo recurso
+      operationId: getSegundoRecurso
+      responses:
+        '200':
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+
+    post:
+      tags:
+        - SegundoRecurso
+      summary: Endpoint do segundo recurso
+      operationId: createSegundoRecurso
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                unico:
+                  type: string
+                estado:
+                  type: string
+      responses:
+        '201':
+          description: Recurso criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegundoRecurso'
+
+
+
+
+  /segundorecurso/{cnt}:
+    get:
+      tags:
+        - SegundoRecurso
+      summary: Endpoint do segundo recurso com CNT
+      operationId: getSegundoRecursoById
+      parameters:
+        - name: cnt
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegundoRecurso'
+
+    put:
+      tags:
+        - SegundoRecurso
+      summary: Atualiza o segundo recurso pelo CNT
+      operationId: updateSegundoRecurso
+      parameters:
+        - name: cnt
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                unico:
+                  type: string
+                estado:
+                  type: string
+      responses:
+        '200':
+          description: Recurso atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegundoRecurso'
+        '400':
+          description: Pedido inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Recurso não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - SegundoRecurso
+      summary: Atualiza o segundo recurso pelo CNT
+      operationId: updateSegundoRecurso
+      parameters:
+        - name: cnt
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                unico:
+                  type: string
+                estado:
+                  type: string
+      responses:
+        '200':
+          description: Recurso atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegundoRecurso'
+        '400':
+          description: Pedido inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Recurso não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - SegundoRecurso
+      summary: Remove o segundo recurso pelo CNT
+      operationId: deleteSegundoRecurso
+      parameters:
+        - name: cnt
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Recurso removido com sucesso
+        '400':
+          description: Pedido inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Recurso não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+components:
+  schemas:
+    ItemInput:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Item 1
+      required:
+        - id
+        - name  
+    PaginatedItems:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+    SegundoRecurso:
+      type: object
+      Required:
+        - cnt
+        - unico
+        - estado
+        - momento
+      properties:
+        cnt:
+          type: integer
+        unico:
+          type: string
+        estado:
+          type: string
+        momento:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        required:
+          - error
+
