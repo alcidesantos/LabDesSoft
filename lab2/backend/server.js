@@ -4,7 +4,13 @@ const yaml = require('yamljs');
 const swaggerDocument = yaml.load('./openapi.yaml');
 const app = express();
 const port = 3000;
+
+const sse = require('./sse');
+const nodemon = require('nodemon');
+
 app.use(express.json())
+
+app.use(express.static('public'));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -353,7 +359,7 @@ const tarefas = [
   {
     id: 1,
     titulo: "ER site",
-    estado: "concluida",        // aberto | em_progresso | concluido | cancelado
+    estado: "concluida",        // aberta | em_progresso | concluida | cancelada
     prioridade: "alta",         // baixa | media | alta | critica
     id_projecto: 1,
     id_utilizador: 1              // id de utilizador
@@ -416,6 +422,112 @@ app.get('/api/utilizadores/:id/tarefas', (req, res) => {
 	const listaTarefas = tarefas.filter(t => t.id_utilizador === idutilizador);
 	return res.status(200).json(listaTarefas);
 });
+
+app.post('/api/tarefas', (req, res) => {
+	const { titulo, estado = 'aberta', prioridade = 'media', id_projecto, id_utilizador } = req.body;
+
+	if (!titulo) {
+		return res.status(400).json({ error: "campo titulo obrigatorio" });
+	}
+	if (!id_projecto || !projectos.find(p => p.id === Number(id_projecto) ) ) {
+		return res.status(400).json({ erro: "id_projecto invalido" });
+	}
+	if (!id_utilizador || !utilizadores.find(u => u.id === Number(id_utilizador) ) ) {
+		return res.status(400).json({ error: "id_utilizador invalido" });
+	}
+
+	novaTarefa = {
+		id: tarefas.length ? Math.max(...tarefas.map(t => t.id)) + 1 : 1,
+		titulo,
+		estado,
+		prioridade,
+		id_projecto: Number(id_projecto),
+		id_utilizador: id_utilizador ? Number(id_utilizador) : null
+	};
+	tarefas.push(novaTarefa);
+
+	sse.emitir('tarefa-criada', novaTarefa);
+
+	return res.status(200).json(novaTarefa);
+});
+
+app.put('/app/tarefas', (req, res) => {
+	const id = Number(req.params.id);
+	
+	const idx = tarefas.findIndex(t => t.id === id);
+	if (idx === -1) return res.status(404).json({ error: "tarefa não encontrada" });
+
+	const { titulo, estado, prioridade, id_projecto, id_utilizador } = req.body;
+
+	if (!titulo || !estado || !prioridade || !id_projecto) {
+		return res.status(400).json({ error: "campos obrigatórios: titulo, estado, prioridade, id_projjecto" });
+	}
+
+	const estadosTarefas = ["aberta", "em_progresso", "concluida", "cancelada"];
+	if (!estadosTarefas.includes(estado)) {
+		return res.status(400).json({ error: "estado de tarfea invalido" });
+	}
+
+	const prioridadesTarefas = ["baixa", "media", "alta", "critica"];
+	if (!prioridadesTarefas.includes(prioridade)) {
+		return res.status(400).json({ error: "prioridade de tarfea invalida" });
+	}	
+
+	if (!projectos.find(p => p.id === Number(id_projecto))) {
+		return res.status(400).json({ error: "id_projecto não existe" });
+	}
+
+	if (!id_utilizador && !utilizadores.find(u => u.id == Number(id_utilizador))) {
+		return res.status(400).json({ error: "id_utilizador não existe" });
+	}
+
+	const tarefaActualizada = {
+		id,
+		titulo,
+		estado,
+		id_projecto: Number(id_projecto),
+		id_utilizador: Number(id_utilizador)
+	}; 
+	tarefas[idx] = tarefaActualizada;
+
+	sse.emitir('tarefa-actualizada', tarefaActualizada);
+	return res.status(200).json(tarefaActualizada);
+});
+
+app.delete('app/tarefas/:id', (req, res) => {
+	const id = Number(req.params.id);
+	const idx = tarefas.findIndex(t => t.id === id);
+	if (idx === -1) {
+		return res.status(404).json({ error: "tarefa não encontrada" });
+	}
+
+	const removida = tarefas.splice(idx, 1)[0];
+
+	sse.emitir('tarefa-apagada', { id: removida.id });
+	return res.status(204).send();
+});
+
+// SSE
+app.get('/api/eventos', (req, res) => {
+	res.set({
+		'Content-Type': 'text/event-stream',
+		'Cache-Control': 'no-cache',
+		'Connection': 'keep-alive',
+		'X-Accel-Buffering': 'no'
+	});
+	
+	res.flushHeaders();
+
+	res.write(`event: ligado\ndata: ${JSON.stringify({ ts: new Date().toISOString() })}\n\n`);
+
+	sse.adicionarCliente(res);
+
+	const ping = setInterval(() => res.write(': ping\n\n'), 25000);
+	
+	req.on('close', () => clearInterval(ping));
+});
+
+
 
 app.listen(port, () => {
   console.log(`API do Lab2 está a correr em http://localhost:${port}`);

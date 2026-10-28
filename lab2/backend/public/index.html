@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <title>Tarefas — tempo real</title>
+  <style>
+    body { font-family: system-ui; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+    #estado { padding: 0.4rem 0.8rem; border-radius: 4px; display: inline-block; font-size: 0.9em; }
+    .ligado { background: #d4edda; color: #155724; }
+    .desligado { background: #f8d7da; color: #721c24; }
+    #log { background: #f4f4f4; padding: 1rem; border-radius: 4px; height: 400px; overflow-y: auto; margin-top: 1rem; }
+    #log div { padding: 4px 0; border-bottom: 1px solid #e0e0e0; font-family: monospace; font-size: 0.85em; }
+    .criada { color: #155724; }
+    .atualizada { color: #856404; }
+    .apagada { color: #721c24; }
+    .hora { color: #888; }
+  </style>
+</head>
+<body>
+  <h1>Tarefas — eventos em tempo real</h1>
+  <p>Estado: <span id="estado" class="desligado">a ligar...</span></p>
+  <div id="log"></div>
+
+  <script>
+    const estadoEl = document.getElementById('estado');
+    const logEl = document.getElementById('log');
+
+    function escrever(texto, classe) {
+      const linha = document.createElement('div');
+      linha.className = classe || '';
+      const hora = new Date().toLocaleTimeString();
+      linha.innerHTML = `<span class="hora">${hora}</span> — ${texto}`;
+      logEl.prepend(linha);
+    }
+
+    const es = new EventSource('/api/eventos');
+
+    es.addEventListener('ligado', () => {
+      estadoEl.textContent = 'ligado';
+      estadoEl.className = 'ligado';
+      escrever('ligado ao servidor', 'criada');
+    });
+
+    es.addEventListener('tarefa-criada', (e) => {
+      const t = JSON.parse(e.data);
+      escrever(`+ tarefa #${t.id}: "${t.titulo}" (projeto ${t.id_projecto})`, 'criada');
+    });
+
+    es.addEventListener('tarefa-atualizada', (e) => {
+      const t = JSON.parse(e.data);
+      escrever(`~ tarefa #${t.id}: "${t.titulo}" → ${t.estado}`, 'atualizada');
+    });
+
+    es.addEventListener('tarefa-apagada', (e) => {
+      const d = JSON.parse(e.data);
+      escrever(`- tarefa #${d.id} apagada`, 'apagada');
+    });
+
+    es.onerror = () => {
+      estadoEl.textContent = 'desligado (a reconectar...)';
+      estadoEl.className = 'desligado';
+    };
+  </script>
+</body>
+</html>
