@@ -335,6 +335,88 @@ app.delete('/segundorecurso/:cnt', (req, res) => {
 	}
 });
 
+// #####################################################
+// # Cenário de tarefas com projectos e utilizadores
+// #####################################################
+
+const projectos = [
+  { id: 1, nome: "Website Empresa1", descricao: "Site Empresa1", estado: "ativo" },
+  { id: 2, nome: "Website Empresa2", descricao: "Site Empresa2", estado: "ativo" }
+];
+
+const utilizadores = [
+  { id: 1, nome: "Ana Silva", email: "ana@minhaempresa.pt" },
+  { id: 2, nome: "Bruno Costa", email: "bruno@minhaempresa.pt" }
+];
+
+const tarefas = [
+  {
+    id: 1,
+    titulo: "ER site",
+    estado: "concluida",        // aberto | em_progresso | concluido | cancelado
+    prioridade: "alta",         // baixa | media | alta | critica
+    id_projecto: 1,
+    id_utilizador: 1              // id de utilizador
+  },
+  {
+    id: 2,
+    titulo: "Autenticação utilizadores",
+    estado: "em_progresso",
+    prioridade: "critica",
+    id_projecto: 1,
+    id_utilizador: 2
+  }
+];
+
+app.get('/api/tarefas', (req, res) => {
+	return res.status(200).json(tarefas);
+});
+
+app.get('/api/tarefas/:id', (req, res) => {
+	const idtarefa = Number(req.params.id);
+	const tarefa = tarefas.find(t => t.id === idtarefa);
+	if (!tarefa) return res.status(404).json({ error: 'tarefa não encontrada' });
+  	return res.status(200).json(tarefa);
+});
+
+app.get('/api/projectos', (req, res) => {
+	return res.status(200).json(projectos);
+});
+
+app.get('/api/projectos/:id', (req, res) => {
+	const idprojecto = Number(req.params.id);
+	const projecto = projectos.find(p => p.id === idprojecto);
+	if (!projecto) return res.status(404).json({ error: 'projecto não encontrado' });
+  	return res.status(200).json(projecto);	
+});
+
+app.get('/api/projectos/:id/tarefas', (req, res) => {
+	const idprojecto = Number(req.params.id);
+	const projecto = projectos.find(p => p.id === idprojecto);
+	if (!projecto) return res.status(404).json({ error: 'projecto não encontrado' });
+	const listaTarefas = tarefas.filter(t => t.id_projecto === idprojecto);
+	return res.status(200).json(listaTarefas);
+});
+
+app.get('/api/utilizadores', (req, res) => {
+	return res.status(200).json(utilizadores);
+});
+
+app.get('/api/utilizadores/:id', (req, res) => {
+	const idutilizador = Number(req.params.id);
+	const utilizador = utilizadores.find(u => u.id === idutilizador);
+	if (!utilizador) return res.status(404).json({ error: 'utilizador não encontrado' });
+  	return res.status(200).json(utilizador);
+});
+
+app.get('/api/utilizadores/:id/tarefas', (req, res) => {
+	const idutilizador = Number(req.params.id);
+	const utilizador = utilizadores.find(u => u.id === idutilizador);
+	if (!utilizador) return res.status(404).json({ error: 'utilizador não encontrado' });
+	const listaTarefas = tarefas.filter(t => t.id_utilizador === idutilizador);
+	return res.status(200).json(listaTarefas);
+});
+
 app.listen(port, () => {
   console.log(`API do Lab2 está a correr em http://localhost:${port}`);
   console.log(`Documentação da API disponível em http://localhost:${port}/api-docs`);
