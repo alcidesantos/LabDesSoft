@@ -52,8 +52,8 @@ Esta separação permite correr o lab1 (porta 3000) e o lab2 (porta 3001) ao mes
 
 ## Segundo Recurso
 
-* Domínio: dominio
-* Campos:
+* **Domínio**: dominio
+* **Campos**:
   * cnt: inteiro
   * unique: string unique 
   * estados: (estado1, estado2, estado3) 
@@ -61,8 +61,8 @@ Esta separação permite correr o lab1 (porta 3000) e o lab2 (porta 3001) ao mes
 
 ## Cenário de tarefas com projectos e utilizadores
 
-* Domínio: Cenário de tarefas com projectos e utilizadores
-* Endpoints:
+* **Domínio**: Cenário de tarefas com projectos e utilizadores
+* **Endpoints**:
   * /api/tarefas
   * /api/tarefas/{id}
   * /api/projectos
@@ -72,20 +72,20 @@ Esta separação permite correr o lab1 (porta 3000) e o lab2 (porta 3001) ao mes
   * /api/utilizadores/{id}
   * /api/utilizadores/{id}/tarefas
   * /api/eventos
-* Campos: 
-  * tarefa:
+* **Campos**: 
+  * ***tarefa***:
     * id: inteiro
     * titulo: string
     * estado: (aberta, em_progresso, concluida, cancelada)
     * prioridade: (alta, baixa, media, alta, critica)
     * id_projecto: inteiro
     * id_utilizador: inteiro
-  * projectos:
+  * ****projectos***:
     * id: inteiro 
     * nome: string
     * descricao: string
     * estado: (activo, arquivado, cancelado)~
-  * utilizadores:
+  * ***utilizadores***:
     * id: inteiro 
     * nome: string 
     * email: string
