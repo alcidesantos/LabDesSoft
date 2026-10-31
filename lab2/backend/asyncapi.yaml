@@ -1,0 +1,104 @@
+asyncapi: 3.1.0
+info:
+  title: Lab2 - API de Eventos SSE
+  version: 1.0.0
+  description: >
+    Contrato da API assíncrona para o stream de eventos (Server-Sent Events) do
+    Lab2.
+
+    Este canal permite que os clientes recebam notificações em tempo real sobre
+    alterações nas tarefas.
+servers:
+  development:
+    host: 'localhost:3001'
+    protocol: http
+    description: Servidor local a correr no Docker.
+    bindings:
+      http:
+        type: request
+        method: GET
+channels:
+  /api/eventos:
+    address: /api/eventos
+    messages:
+      subscribe.message.0:
+        $ref: '#/components/messages/EventoLigado'
+      subscribe.message.1:
+        $ref: '#/components/messages/TarefaCriada'
+      subscribe.message.2:
+        $ref: '#/components/messages/TarefaAtualizada'
+      subscribe.message.3:
+        $ref: '#/components/messages/TarefaApagada'
+    description: Canal SSE que emite eventos relativos ao ciclo de vida das tarefas.
+operations:
+  /api/eventos.subscribe:
+    action: send
+    channel:
+      $ref: '#/channels/~1api~1eventos'
+    summary: O cliente liga-se ao canal para receber eventos.
+    messages:
+      - $ref: '#/channels/~1api~1eventos/messages/subscribe.message.0'
+      - $ref: '#/channels/~1api~1eventos/messages/subscribe.message.1'
+      - $ref: '#/channels/~1api~1eventos/messages/subscribe.message.2'
+      - $ref: '#/channels/~1api~1eventos/messages/subscribe.message.3'
+components:
+  messages:
+    EventoLigado:
+      name: ligado
+      title: Ligação Estabelecida
+      summary: Enviado imediatamente quando o cliente estabelece a ligação.
+      payload:
+        type: object
+        properties:
+          ts:
+            type: string
+            format: date-time
+            description: Timestamp de quando a ligação foi aceite.
+    TarefaCriada:
+      name: tarefa-criada
+      title: Tarefa Criada
+      summary: Enviado quando uma nova tarefa é adicionada via POST.
+      payload:
+        $ref: '#/components/schemas/Tarefa'
+    TarefaAtualizada:
+      name: tarefa-actualizada
+      title: Tarefa Atualizada
+      summary: Enviado quando uma tarefa sofre alterações via PUT.
+      payload:
+        $ref: '#/components/schemas/Tarefa'
+    TarefaApagada:
+      name: tarefa-apagada
+      title: Tarefa Apagada
+      summary: Enviado quando uma tarefa é removida via DELETE.
+      payload:
+        type: object
+        properties:
+          id:
+            type: integer
+            description: O ID da tarefa que foi removida.
+  schemas:
+    Tarefa:
+      type: object
+      properties:
+        id:
+          type: integer
+        titulo:
+          type: string
+        estado:
+          type: string
+          enum:
+            - aberta
+            - em_progresso
+            - concluida
+            - cancelada
+        prioridade:
+          type: string
+          enum:
+            - baixa
+            - media
+            - alta
+            - critica
+        id_projecto:
+          type: integer
+        id_utilizador:
+          type: integer

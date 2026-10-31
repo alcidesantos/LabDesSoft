@@ -9,3 +9,8 @@ services:
     command: npm run dev
     stdin_open: true
     tty: true
+  studio:
+    image: asyncapi/studio
+    ports:
+      - "8000:80"
+    restart: unless-stopped

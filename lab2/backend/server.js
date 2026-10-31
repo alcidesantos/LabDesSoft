@@ -530,6 +530,10 @@ app.get('/api/eventos', (req, res) => {
 
 
 app.listen(port, () => {
-  console.log(`API do Lab2 está a correr em http://localhost:${port}`);
-  console.log(`Documentação da API disponível em http://localhost:${port}/api-docs`);
+  console.log(`\n=========================================================`);
+  console.log(`API do Lab2 a correr:  http://localhost:3001`);
+  console.log(`Endpoint SSE:          http://localhost:3001/api/eventos`);
+  console.log(`Swagger UI (OpenAPI):  http://localhost:3001/api-docs`);
+  console.log(`AsyncAPI Studio:       http://localhost:8000`);
+  console.log(`=========================================================\n`);
 });

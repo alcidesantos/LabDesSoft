@@ -5,13 +5,13 @@ function adicionarCliente(res) {
     
     function remover() {
         clientes.delete(res);
-        console.log("[SSE] cliente desligado");
+        console.log("[SSE] cliente desligado. Total actual:" + clientes.size);
     }
 
     res.on('close', remover);
     res.on('error', remover);
 
-    console.log("[SSE] cliente ligado");
+    console.log("[SSE] cliente ligado. Total actual:" + clientes.size);
 }
 
 function emitir(evento, dados) {
