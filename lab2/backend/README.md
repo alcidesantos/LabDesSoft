@@ -92,7 +92,7 @@ Esta separação permite correr o lab1 (porta 3000) e o lab2 (porta 3001) ao mes
 
 ## Declaração de utilização de IA
 
-- Link para interacção com IA https://chat.deepseek.com/share/dtew6et16uf6p0hgtn que é o seguimento do lab1, mantendo assim o contexto no diálogo coma a IA
+- Link para interacção com IA https://chat.deepseek.com/share/8tfcrqsp45gpdzuril que consiste no seguimento do lab1, mantendo assim o contexto no diálogo coma a IA. A interação com a IA foi usada várias vezes como ponto de partida para a realização do laboratório. Tipicamente começo qualquer trabalho (de programação e não só) com um outro que tenha uma estrutura sememlhante e vou ajustando para a realidade que tenho pela frente. Há dezenas de anos era com um exemplo tirado de um livro. Depois, com um exemplo tirado de uma disquete. Mais tarde, com um exemplo tirado de algum site na Internet. Agora, é com algo extraído da IA. continua a ser a mesma forma de proceder.
 - Desactivei o autocomplete do VSC
 
 ## Justificação Técnica: REST (Lab1) vs. SSE (Lab2)
@@ -121,7 +121,9 @@ No desenvolvimento do Lab2, a arquitetura evoluiu de uma abordagem puramente RES
 
 ## Adicionada Documentação 
 
-Documentação da API disponível em http://localhost:$3001/api-docs
+Documentação de:
+* **API REST** disponível em http://localhost:$3001/api-docs 
+* **API SSE** em http://localhost:8000
 
-## Comentários livres
+
 
