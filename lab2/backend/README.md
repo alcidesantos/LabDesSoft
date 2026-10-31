@@ -99,21 +99,21 @@ Esta separação permite correr o lab1 (porta 3000) e o lab2 (porta 3001) ao mes
 
 No desenvolvimento do Lab2, a arquitetura evoluiu de uma abordagem puramente REST para uma arquitectura híbrida, integrando Server-Sent Events (SSE). Esta escolha foi feita para responder aos requisitos de notificação em tempo real, mantendo os endpoints REST para as operações de manipulação de dados.
 
-* Padrão de comunicação e direcção do fluxo
-  * REST (Lab1): Baseia-se no padrão Request/Response (pedido/resposta). O fluxo é unidirecional e iniciado pelo cliente (pull). O cliente solicita um recurso (ex: GET /tarefas) e o servidor responde e fecha a ligação.
-  * SSE (Lab2): Baseia-se num padrão orientado a eventos (Event-Driven). O fluxo é unidirecional do servidor para o cliente (push). O cliente abre uma única ligação HTTP persistente (GET /api/eventos), e o servidor mantém essa ligação aberta para enviar actualizações (novas tarefas, alterações de estado) à medida que ocorrem.
-* Adequação ao requisito e aos clientes envolvidos
+* **Padrão de comunicação e direcção do fluxo**
+  * **REST (Lab1)**: Baseia-se no padrão Request/Response (pedido/resposta). O fluxo é unidirecional e iniciado pelo cliente (pull). O cliente solicita um recurso (ex: GET /tarefas) e o servidor responde e fecha a ligação.
+  * **SSE (Lab2)**: Baseia-se num padrão orientado a eventos (Event-Driven). O fluxo é unidirecional do servidor para o cliente (push). O cliente abre uma única ligação HTTP persistente (GET /api/eventos), e o servidor mantém essa ligação aberta para enviar actualizações (novas tarefas, alterações de estado) à medida que ocorrem.
+* **Adequação ao requisito e aos clientes envolvidos**
   * A abordagem REST do Lab1 é adequada para operações CRUD (Create, Read, Update, Delete), onde o cliente dita o ritmo da interação.
   * Para o Lab2, o requisito de mostrar alterações de tarefas em tempo real a múltiplos utilizadores num dashboard tornaria o REST puro ineficiente, pois exigiria polling constante (o cliente a perguntar "houve mudanças?" a cada segundo). O SSE é o padrão ideal para este cenário, pois o cliente (o browser) suporta nativamente a API EventSource, eliminando a necessidade de bibliotecas externas pesadas.
-* Complexidade de implementação e operação
-  * REST: É conceptualmente simples e, na sua essência, stateless (sem estado). Cada pedido é independente, o que facilita a escalabilidade horizontal (basta adicionar mais servidores).
-  * SSE: Aumenta a complexidade porque introduz estado no servidor. O servidor tem de manter uma lista (no nosso caso, um objeto Set) de todos os clientes ligados. Além disso, exige gestão de keep-alive (envio de pings periódicos para evitar que eventuais proxies cortem a ligação) e gestão de memória para remover clientes que se desligaram abruptamente.
-* Tratamento de erros, validação e limitações relevantes
-  * REST: O tratamento de erros é padronizado e simples, utilizando códigos de estado HTTP (400, 404, 500). A validação de dados (ex: campos obrigatórios, enums de estado) ocorre antes de a resposta ser enviada, garantindo a integridade dos dados.
-  * SSE: Não substitui o REST para validação. A validação continua a ser feita nos endpoints REST (POST/PUT). Se a validação falhar, o SSE não é acionado. No SSE, os erros estão maioritariamente ligados à perda de ligação (Network Errors). A principal limitação é que o SSE é estritamente unidirecional (servidor → cliente) e está limitado pelo protocolo HTTP/1.1 a 6 ligações simultâneas por domínio no browser (no HTTP/2 este limite desaparece).
-* Vantagens e Desvantagens da Tecnologia Escolhida (SSE)
-  * Vantagem (Justificada): Comunicação em tempo real com baixo consumo de recursos. Em vez de o cliente fazer dezenas de pedidos HTTP por minuto para verificar alterações (polling), o servidor notifica-o apenas quando há um evento real (ex: tarefa-criada). Isto poupa largura de banda e processamento no servidor, e a reconexão em caso de falha de rede é feita automaticamente pelo browser.
-  * Desvantagem (Justificada): Dificuldade de escalabilidade horizontal (Stateful). Como o servidor guarda as ligações em memória, se a aplicação crescer e precisar de correr em múltiplos servidores (ex: Load Balancer), um evento criado no Servidor A não chegará aos clientes ligados ao Servidor B. Para resolver isto, seria necessário implementar um message broker para sincronizar os eventos entre instâncias, o que adiciona uma camada significativa de complexidade à operação.
+* **Complexidade de implementação e operação**
+  * **REST**: É conceptualmente simples e, na sua essência, stateless (sem estado). Cada pedido é independente, o que facilita a escalabilidade horizontal (basta adicionar mais servidores).
+  * **SSE**: Aumenta a complexidade porque introduz estado no servidor. O servidor tem de manter uma lista (no nosso caso, um objeto Set) de todos os clientes ligados. Além disso, exige gestão de keep-alive (envio de pings periódicos para evitar que eventuais proxies cortem a ligação) e gestão de memória para remover clientes que se desligaram abruptamente.
+* **Tratamento de erros, validação e limitações relevantes**
+  * **REST**: O tratamento de erros é padronizado e simples, utilizando códigos de estado HTTP (400, 404, 500). A validação de dados (ex: campos obrigatórios, enums de estado) ocorre antes de a resposta ser enviada, garantindo a integridade dos dados.
+  * **SSE**: Não substitui o REST para validação. A validação continua a ser feita nos endpoints REST (POST/PUT). Se a validação falhar, o SSE não é acionado. No SSE, os erros estão maioritariamente ligados à perda de ligação (Network Errors). A principal limitação é que o SSE é estritamente unidirecional (servidor → cliente) e está limitado pelo protocolo HTTP/1.1 a 6 ligações simultâneas por domínio no browser (no HTTP/2 este limite desaparece).
+* **Vantagens e Desvantagens da Tecnologia Escolhida (SSE)**
+  * **Vantagem (Justificada): Comunicação em tempo real com baixo consumo de recursos.** Em vez de o cliente fazer dezenas de pedidos HTTP por minuto para verificar alterações (polling), o servidor notifica-o apenas quando há um evento real (ex: tarefa-criada). Isto poupa largura de banda e processamento no servidor, e a reconexão em caso de falha de rede é feita automaticamente pelo browser.
+  * **Desvantagem (Justificada): Dificuldade de escalabilidade horizontal (Stateful).** Como o servidor guarda as ligações em memória, se a aplicação crescer e precisar de correr em múltiplos servidores (ex: Load Balancer), um evento criado no Servidor A não chegará aos clientes ligados ao Servidor B. Para resolver isto, seria necessário implementar um message broker para sincronizar os eventos entre instâncias, o que adiciona uma camada significativa de complexidade à operação.
 
 ## Testes e evidências
 
