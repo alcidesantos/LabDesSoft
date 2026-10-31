@@ -90,7 +90,7 @@ app-1     | =========================================================
     * prioridade: (alta, baixa, media, alta, critica)
     * id_projecto: inteiro
     * id_utilizador: inteiro
-  * ****projectos***:
+  * ***projectos***:
     * id: inteiro 
     * nome: string
     * descricao: string
