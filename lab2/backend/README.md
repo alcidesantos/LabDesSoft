@@ -103,7 +103,7 @@ app-1     | =========================================================
 ## Declaração de utilização de IA
 
 - Link para interacção com IA https://chat.deepseek.com/share/8tfcrqsp45gpdzuril que consiste no seguimento do lab1, mantendo assim o contexto no diálogo coma a IA. A interação com a IA foi usada várias vezes como ponto de partida para a realização do laboratório. Tipicamente começo qualquer trabalho (de programação e não só) com um outro que tenha uma estrutura sememlhante e vou ajustando para a realidade que tenho pela frente. Há dezenas de anos era com um exemplo tirado de um livro. Depois, com um exemplo tirado de uma disquete. Mais tarde, com um exemplo tirado de algum site na Internet. Agora, é com algo extraído da IA. continua a ser a mesma forma de proceder.
-- Desactivei o autocomplete do VSC
+- Para maior controlo, desactivei o autocomplete do VSC
 
 ## Justificação Técnica: REST (Lab1) vs. SSE (Lab2)
 
