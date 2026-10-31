@@ -346,8 +346,8 @@ app.delete('/segundorecurso/:cnt', (req, res) => {
 // #####################################################
 
 const projectos = [
-  { id: 1, nome: "Website Empresa1", descricao: "Site Empresa1", estado: "ativo" },
-  { id: 2, nome: "Website Empresa2", descricao: "Site Empresa2", estado: "ativo" }
+  { id: 1, nome: "Website Empresa1", descricao: "Site Empresa1", estado: "activo" },
+  { id: 2, nome: "Website Empresa2", descricao: "Site Empresa2", estado: "activo" }
 ];
 
 const utilizadores = [

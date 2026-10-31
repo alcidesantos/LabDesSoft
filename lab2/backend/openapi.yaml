@@ -646,6 +646,8 @@ components:
           type: string
         estado:
           type: string
+          enum: [activo, arquivado, cancelado]
+          default: "activo"
     Utilizador:
       type: object
       properties:
