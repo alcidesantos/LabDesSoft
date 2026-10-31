@@ -31,20 +31,30 @@ docker compose exec app sh
 docker compose exec app npm install <pacote>
 ```
 
-## Portas
+## Portas e Documentação
 
-O servidor Node ouve na porta **3000** dentro do container (definido em `server.js`).
+O servidor Node.js está configurado para ouvir a porta `3000` **dentro** do container Docker (definido no `server.js`). No entanto, o `docker-compose.yml` mapeia a porta `3001` do host para a `3000` do container (`"3001:3000"`). 
 
-O `docker-compose.yml` mapeia a porta **3001 do host** para a **3000 do container**:
+Esta separação é intencional e permite correr o **lab1** (porta 3000) e o **lab2** (porta 3001) em simultâneo sem conflitos de rede. Por este motivo, os logs do container mostram a porta 3000, mas o acesso externo (no browser) deve ser feito sempre através da porta 3001.
 
-    ports:
-      - "3001:3000"
+### Endpoints e Interfaces Disponíveis
 
-- Acesso no browser: http://localhost:3001
-- Swagger: http://localhost:3001/api-docs
-- Os logs do container mostram 3000, porque é a porta interna.
+- **API REST:** `http://localhost:3001`
+- **Endpoint SSE (Eventos):** `http://localhost:3001/api/eventos`
+- **Documentação Swagger (OpenAPI):** `http://localhost:3001/api-docs`
+- **Documentação AsyncAPI Studio:** `http://localhost:8000`
 
-Esta separação permite correr o lab1 (porta 3000) e o lab2 (porta 3001) ao mesmo tempo.
+### Banner de Arranque
+Para facilitar o desenvolvimento, o servidor imprime um resumo de todos os pontos de acesso no terminal assim que arranca, juntamente com o log do Docker:
+
+```text
+app-1     | =========================================================
+app-1     | API do Lab2 a correr:  http://localhost:3001
+app-1     | Endpoint SSE:          http://localhost:3001/api/eventos
+app-1     | Swagger UI (OpenAPI):  http://localhost:3001/api-docs
+app-1     | AsyncAPI Studio:       http://localhost:8000
+app-1     | =========================================================
+```
 
 ## Versão node.js
 
@@ -119,11 +129,7 @@ No desenvolvimento do Lab2, a arquitetura evoluiu de uma abordagem puramente RES
 
 - Consultar /lab2/testes/lab2.postman_collection.json que é autoexplicativo
 
-## Adicionada Documentação 
 
-Documentação de:
-* **API REST** disponível em http://localhost:$3001/api-docs 
-* **API SSE** em http://localhost:8000
 
 
 
