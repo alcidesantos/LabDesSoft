@@ -436,7 +436,7 @@ app.post('/api/tarefas', (req, res) => {
 		return res.status(400).json({ error: "id_utilizador invalido" });
 	}
 
-	novaTarefa = {
+	const novaTarefa = {
 		id: tarefas.length ? Math.max(...tarefas.map(t => t.id)) + 1 : 1,
 		titulo,
 		estado,
@@ -451,7 +451,7 @@ app.post('/api/tarefas', (req, res) => {
 	return res.status(200).json(novaTarefa);
 });
 
-app.put('/app/tarefas', (req, res) => {
+app.put('/api/tarefas/:id', (req, res) => {
 	const id = Number(req.params.id);
 	
 	const idx = tarefas.findIndex(t => t.id === id);
@@ -477,7 +477,7 @@ app.put('/app/tarefas', (req, res) => {
 		return res.status(400).json({ error: "id_projecto não existe" });
 	}
 
-	if (!id_utilizador && !utilizadores.find(u => u.id == Number(id_utilizador))) {
+	if (id_utilizador && !utilizadores.find(u => u.id == Number(id_utilizador))) {
 		return res.status(400).json({ error: "id_utilizador não existe" });
 	}
 
@@ -494,7 +494,7 @@ app.put('/app/tarefas', (req, res) => {
 	return res.status(200).json(tarefaActualizada);
 });
 
-app.delete('app/tarefas/:id', (req, res) => {
+app.delete('/api/tarefas/:id', (req, res) => {
 	const id = Number(req.params.id);
 	const idx = tarefas.findIndex(t => t.id === id);
 	if (idx === -1) {

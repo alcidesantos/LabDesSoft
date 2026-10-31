@@ -6,8 +6,8 @@ info:
   description: API para o Lab2.
 
 servers:
-  - url: http://localhost:3000
-    description: Servidor local
+  - url: http://localhost:3001
+    description: Servidor local (Docker)
 
 paths:
   /:
@@ -122,7 +122,7 @@ paths:
             minimum: 1
       responses:
         '200':
-          description: Lista de itens (paginada ou total)
+          description: Item em função de ID
           content:
             application/json:
               schema:
@@ -307,48 +307,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-    put:
-      tags:
-        - SegundoRecurso
-      summary: Atualiza o segundo recurso pelo CNT
-      operationId: updateSegundoRecurso
-      parameters:
-        - name: cnt
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                unico:
-                  type: string
-                estado:
-                  type: string
-      responses:
-        '200':
-          description: Recurso atualizado com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SegundoRecurso'
-        '400':
-          description: Pedido inválido
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Recurso não encontrado
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
     delete:
       tags:
         - SegundoRecurso
@@ -375,7 +333,221 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                
+
+  /api/tarefas:
+    get:
+      summary: Lista tarefas
+      tags: [Tarefas]
+      responses:
+        '200':
+          description: Lista de tarefas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tarefa'
+
+    post:
+      summary: Cria nova tarefa
+      tags: [Tarefas]
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NovaTarefa'
+      responses:
+        '200':
+          description: Tarefa criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tarefa'
+        '400':
+          description: Erro de validação - falta de título ou IDs inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/tarefas/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Obtém a tarefa em função do ID
+      tags: [Tarefas]
+      responses:
+        '200':
+          description: Detalhes da tarefa
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tarefa'
+        '404':
+          description: Tarefa não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Actualiza uma tarefa existente
+      tags: [Tarefas]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NovaTarefa'
+      responses:
+        '200':
+          description: tarefa actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tarefa'
+        '400':
+          description: Erro de validação
+        '404':
+          description: Tarefa não encontrada
+    delete:
+      summary: Apaga uma tarefa
+      tags: [Tarefas]
+      responses:
+        '204':
+          description: Tarefa apagada com sucesso
+        '404':
+          description: Tarefa não encontrada
+
+  /api/projectos:
+    get:
+      summary: Lista projectos
+      tags: [Projectos]
+      responses:
+        '200':
+          description: Lista projectos
+          content: 
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Projecto'
+
+  /api/projectos/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Dado ID obtem projecto
+      tags: [Projectos]
+      responses:
+        '200':
+          description: Detalhesdo projecto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projecto'
+        '404':
+          description: Projecto não encontrado
+
+  /api/projectos/{id}/tarefas:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Lista tarefas de um dado projecto
+      tags: [Projectos, Tarefas]
+      responses:
+        '200':
+          description: Lista tarefas de um dado projecto
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Tarefa'
+        '404':
+          description: Projjecto não encontrado
+
+  /api/utilizadores:
+    get:
+      summary: Lista utilizadores
+      tags: [Utilizadores]
+      responses:
+        '200':
+          description: Lista utilizadores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Utilizador'
+
+  /api/utilizadores/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Devolve utilizador em função do ID
+      tags: [Utilizadores]
+      responses: 
+        '200':
+          description: Detalhes do utilizador
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilizador'
+        '404':
+          description: Utilizador não encontrado
+
+  /api/utilizadores/{id}/tarefas:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: 
+          type: integer
+    get:
+      summary: Lista tarefas de um utilizador
+      tags: [Utilizadores, Tarefas]
+      responses:
+        '200':
+          description: Lista tarefas de um utilizador
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tarefa'
+        '404':
+          description: Utilizador não encontrado
+
+  /api/eventos:
+    get:
+      summary: stream de eventos em tempo real (SSE)
+      tags: [Eventos]
+      description: Devolve stream em texto com eventos (ligado, tarefa-criada, tarefa-actualizada, tarefa-apagada)
+      responses:
+        '200':
+          description: Devolve stream em texto com eventos (ligado, tarefa-criada, tarefa-actualizada, tarefa-apagada)
+          content:
+            text/event-stream:
+              schema:
+                type: string
+
 components:
   schemas:
     ItemInput:
@@ -410,7 +582,7 @@ components:
             $ref: '#/components/schemas/Item'
     SegundoRecurso:
       type: object
-      Required:
+      required:
         - cnt
         - unico
         - estado
@@ -425,11 +597,69 @@ components:
         momento:
           type: string
           format: date-time
+    Tarefa:
+      type: object
+      properties:
+        id:
+          type: integer
+        titulo:
+          type: string
+        estado:
+          type: string
+          enum: [aberta, em_progresso, concluida, cancelada]
+        prioridade:
+          type: string
+          enum: [baixa, media, alta, critica]
+        id_projecto:
+          type: integer
+        id_utilizador:
+          type: integer
+    NovaTarefa:
+      type: object
+      required: 
+        - titulo
+        - id_projecto
+        - id_utilizador
+      properties:
+        titulo:
+          type: string
+        estado:
+          type: string
+          enum: [aberta, em_progresso, concluida, cancelada]
+          default: "aberta"
+        prioridade:
+          type: string
+          enum: [baixa, media, alta, critica]
+          default: "media"
+        id_projecto:
+          type: integer
+        id_utilizador:
+          type: integer
+    Projecto:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        descricao:
+          type: string
+        estado:
+          type: string
+    Utilizador:
+      type: object
+      properties:
+        id: 
+          type: integer
+        nome: 
+          type: string
+        email: 
+          type: string
+          format: email
     Error:
       type: object
       properties:
         error:
           type: string
-        required:
-          - error
+
 

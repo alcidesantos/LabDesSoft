@@ -19,7 +19,7 @@ function emitir(evento, dados) {
     for (const res of clientes) {
         res.write(informacao);
     }
-    console.log("[SSE] evento " + evento + " enviado a " + clientes.size() + " clientes");
+    console.log("[SSE] evento " + evento + " enviado a " + clientes.size + " clientes");
 }
 
 module.exports = { adicionarCliente, emitir };
