@@ -1,6 +1,6 @@
 services:
   app:
-    image: node:24-slim
+    build: .                  #image: node:24-slim
     working_dir: /app
     volumes:
       - .:/app
@@ -9,8 +9,24 @@ services:
     command: npm run dev
     stdin_open: true
     tty: true
+    depends_on:
+      - db
   studio:
     image: asyncapi/studio
     ports:
       - "8001:80"
     restart: unless-stopped
+  
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: alcides
+      POSTGRES_PASSWORD: 1Pwd4Ips!
+      POSTGRES_DB: lab3db
+    ports:
+      - "5433:5432"
+    volumes:
+      - lab3_pgdata:/var/lib/postgresql/data
+
+volumes:
+  lab3_pgdata:
