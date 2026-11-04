@@ -1,4 +1,4 @@
-# Lab2 — Backend
+# Lab3 — Backend
 
 API Node.js/Express do Laboratório 3 da cadeira Laboratório de Desenvolvimento de Software. 
 Nesta versão, os dados deixaram de estar em memória e passaram a ser persistidos numa base de dados **PostgreSQL** utilizando o ORM **Prisma**.
@@ -59,12 +59,12 @@ app-1     | ====================================================================
 ## Base de Dados e Prisma
 
 Os dados residem num volume Docker (lab3_pgdata). Para aceder à base de dados através de uma ferramenta gráfica (DBeaver, pgAdmin) ou do terminal:
-**Via DBeaver/pgAdmin (no Windows):**
+### Via DBeaver/pgAdmin (no Windows):
 - Host: localhost
 - Porta: 5433
 - Base de Dados: lab3db
 - User/Password: (verificar ficheiro .env)
-**Via terminal (psql):**
+### Via terminal (psql):
 ```bash
 docker compose exec db psql -U lab3user -d lab3db
 ```
@@ -134,11 +134,11 @@ docker compose exec app npx prisma studio                    # Abrir interface v
 - Consultar /lab2/testes/lab3.postman_collection.json que é autoexplicativo
 
 ### O que mudou e porquê:
-**1. Título e Introdução:** Atualizado para Lab3 e adicionada a menção ao PostgreSQL e Prisma.
-**2. Como correr:** Adicionada a etapa obrigatória de correr as *migrações* (`npx prisma migrate dev`) antes de arrancar a API. Isto é vital para quem clonar o projeto, senão a base de dados está vazia.
-**3. Portas:** Atualizadas para `3002` (API) e `8001` (AsyncAPI). Adicionada a porta `5433` da base de dados.
-**4. Base de Dados:** Nova secção a explicar como ligar-se à BD usando o DBeaver/pgAdmin ou o `psql`, e um alerta sobre o `.env`.
-**5. Modelos:** Atualizei a secção de campos para refletir os modelos exatos do `schema.prisma` (ex: `id` autoincrement, `email` unique).
+1. **Título e Introdução:** Atualizado para Lab3 e adicionada a menção ao PostgreSQL e Prisma.
+2. **Como correr:** Adicionada a etapa obrigatória de correr as *migrações* (`npx prisma migrate dev`) antes de arrancar a API. Isto é vital para quem clonar o projeto, senão a base de dados está vazia.
+3. **Portas:** Atualizadas para `3002` (API) e `8001` (AsyncAPI). Adicionada a porta `5433` da base de dados.
+4. **Base de Dados:** Nova secção a explicar como ligar-se à BD usando o DBeaver/pgAdmin ou o `psql`, e um alerta sobre o `.env`.
+5. **Modelos:** Atualizei a secção de campos para refletir os modelos exatos do `schema.prisma` (ex: `id` autoincrement, `email` unique).
 
 
 
