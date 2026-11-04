@@ -7,6 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum EstadoTarefa {
+  aberta
+  em_progresso
+  concluida
+  cancelada
+}
+
+enum PrioridadeTarefa {
+  baixa
+  media
+  alta
+  critica
+}
+
 model Utilizador {
   id       Int      @id @default(autoincrement())
   nome     String
@@ -25,8 +39,8 @@ model Projecto {
 model Tarefa {
   id            Int        @id @default(autoincrement())
   titulo        String
-  estado        String     @default("aberta")
-  prioridade    String     @default("media")
+  estado        EstadoTarefa     @default("aberta")
+  prioridade    PrioridadeTarefa     @default("media")
   
   // Relações com chaves estrangeiras
   id_projecto   Int

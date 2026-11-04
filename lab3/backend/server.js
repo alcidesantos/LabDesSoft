@@ -1,4 +1,5 @@
 const express = require('express');
+const { PrismaClient, EstadoTarefa, PrioridadeTarefa } = require('@prisma/client');
 const swaggerUi = require('swagger-ui-express');
 const yaml = require('yamljs');
 const swaggerDocument = yaml.load('./openapi.yaml');
@@ -345,6 +346,7 @@ app.delete('/segundorecurso/:cnt', (req, res) => {
 // # Cenário de tarefas com projectos e utilizadores
 // #####################################################
 
+/*
 const projectos = [
   { id: 1, nome: "Website Empresa1", descricao: "Site Empresa1", estado: "activo" },
   { id: 2, nome: "Website Empresa2", descricao: "Site Empresa2", estado: "activo" }
@@ -373,89 +375,156 @@ const tarefas = [
     id_utilizador: 2
   }
 ];
+*/
 
-app.get('/api/tarefas', (req, res) => {
-	return res.status(200).json(tarefas);
+app.get('/api/tarefas', async (req, res) => {
+	try {
+		const tarefas = await prisma.tarefa.findMany();
+		return res.status(200).json(tarefas);
+	} catch (error) {
+		console.error('Erro ao listar tarefas:', error);
+		return res.status(500).json({ error: 'Erro ao listar tarefas' });
+	}	
 });
 
-app.get('/api/tarefas/:id', (req, res) => {
-	const idtarefa = Number(req.params.id);
-	const tarefa = tarefas.find(t => t.id === idtarefa);
-	if (!tarefa) return res.status(404).json({ error: 'tarefa não encontrada' });
-  	return res.status(200).json(tarefa);
+app.get('/api/tarefas/:id', async (req, res) => {
+	try {
+		const idtarefa = Number(req.params.id);
+		const tarefa = await prisma.tarefa.findUnique({
+			where: { id: idtarefa }
+		});
+		if (!tarefa) return res.status(404).json({ error: 'tarefa não encontrada' });
+		return res.status(200).json(tarefa);
+	} catch (error) {
+		console.error('Erro ao procurar tarefa:', error);
+		return res.status(500).json({ error: 'Erro ao procurar tarefa' });
+	}
 });
 
-app.get('/api/projectos', (req, res) => {
-	return res.status(200).json(projectos);
+app.get('/api/projectos', async (req, res) => {
+	try {
+		const projectos = await prisma.projecto.findMany();
+		return res.status(200).json(projectos);
+	} catch (error) {
+		console.error('Erro ao listar projectos:', error);
+		return res.status(500).json({ error: 'Erro ao listar projectos' });
+	}
 });
 
-app.get('/api/projectos/:id', (req, res) => {
-	const idprojecto = Number(req.params.id);
-	const projecto = projectos.find(p => p.id === idprojecto);
-	if (!projecto) return res.status(404).json({ error: 'projecto não encontrado' });
-  	return res.status(200).json(projecto);	
+app.get('/api/projectos/:id', async (req, res) => {
+	try {
+		const idprojecto = Number(req.params.id);
+		const projecto = await prisma.projecto.findUnique({
+			where: { id: idprojecto }
+		});
+		if (!projecto) return res.status(404).json({ error: 'projecto não encontrado' });
+		return res.status(200).json(projecto);
+	} catch (error) {
+		console.error('Erro ao procurar projecto:', error);
+		return res.status(500).json({ error: 'Erro ao procurar projecto' });
+	}
 });
 
-app.get('/api/projectos/:id/tarefas', (req, res) => {
-	const idprojecto = Number(req.params.id);
-	const projecto = projectos.find(p => p.id === idprojecto);
-	if (!projecto) return res.status(404).json({ error: 'projecto não encontrado' });
-	const listaTarefas = tarefas.filter(t => t.id_projecto === idprojecto);
-	return res.status(200).json(listaTarefas);
+app.get('/api/projectos/:id/tarefas', async (req, res) => {
+	try {
+		const idprojecto = Number(req.params.id);
+		const projecto = await prisma.projecto.findUnique({
+			where: { id: idprojecto },
+			include: { tarefas: true }
+		});
+		if (!projecto) return res.status(404).json({ error: 'projecto não encontrado' });
+		return res.status(200).json(projecto.tarefas);
+	} catch (error) {
+		console.error('Erro ao procurar tarefas do projecto:', error);
+		return res.status(500).json({ error: 'Erro ao procurar tarefas do projecto' });
+	}
 });
 
-app.get('/api/utilizadores', (req, res) => {
-	return res.status(200).json(utilizadores);
+app.get('/api/utilizadores', async (req, res) => {
+	try {
+		const utilizadores = await prisma.utilizador.findMany();
+		return res.status(200).json(utilizadores);
+	} catch (error) {
+		console.error('Erro ao listar utilizadores:', error);
+		return res.status(500).json({ error: 'Erro ao listar utilizadores' });
+	}
 });
 
-app.get('/api/utilizadores/:id', (req, res) => {
-	const idutilizador = Number(req.params.id);
-	const utilizador = utilizadores.find(u => u.id === idutilizador);
-	if (!utilizador) return res.status(404).json({ error: 'utilizador não encontrado' });
-  	return res.status(200).json(utilizador);
+app.get('/api/utilizadores/:id', async (req, res) => {
+	try {
+		const idutilizador = Number(req.params.id);
+		const utilizador = await prisma.utilizador.findUnique({
+			where: { id: idutilizador }
+		});
+		if (!utilizador) return res.status(404).json({ error: 'utilizador não encontrado' });
+		return res.status(200).json(utilizador);
+	} catch (error) {
+		console.error('Erro ao procurar utilizador:', error);
+		return res.status(500).json({ error: 'Erro ao procurar utilizador' });
+	}
 });
 
-app.get('/api/utilizadores/:id/tarefas', (req, res) => {
-	const idutilizador = Number(req.params.id);
-	const utilizador = utilizadores.find(u => u.id === idutilizador);
-	if (!utilizador) return res.status(404).json({ error: 'utilizador não encontrado' });
-	const listaTarefas = tarefas.filter(t => t.id_utilizador === idutilizador);
-	return res.status(200).json(listaTarefas);
+app.get('/api/utilizadores/:id/tarefas', async (req, res) => {
+	try {
+		const idutilizador = Number(req.params.id);
+		const utilizador = await prisma.utilizador.findUnique({
+			where: { id: idutilizador },
+			include: { tarefas: true }
+		});
+		if (!utilizador) return res.status(404).json({ error: 'utilizador não encontrado' });
+		return res.status(200).json(utilizador.tarefas);
+	} catch (error) {
+		console.error('Erro ao procurar tarefas do utilizador:', error);
+		return res.status(500).json({ error: 'Erro ao procurar tarefas do utilizador' });
+	}
 });
 
-app.post('/api/tarefas', (req, res) => {
+app.post('/api/tarefas', async (req, res) => {
 	const { titulo, estado = 'aberta', prioridade = 'media', id_projecto, id_utilizador } = req.body;
 
 	if (!titulo) {
 		return res.status(400).json({ error: "campo titulo obrigatorio" });
 	}
-	if (!id_projecto || !projectos.find(p => p.id === Number(id_projecto) ) ) {
+	if (!id_projecto ) {
 		return res.status(400).json({ erro: "id_projecto invalido" });
 	}
-	if (!id_utilizador || !utilizadores.find(u => u.id === Number(id_utilizador) ) ) {
+	if (!id_utilizador ) {
 		return res.status(400).json({ error: "id_utilizador invalido" });
 	}
 
-	const novaTarefa = {
-		id: tarefas.length ? Math.max(...tarefas.map(t => t.id)) + 1 : 1,
-		titulo,
-		estado,
-		prioridade,
-		id_projecto: Number(id_projecto),
-		id_utilizador: id_utilizador ? Number(id_utilizador) : null
-	};
-	tarefas.push(novaTarefa);
+	try {
+		const novaTarefa = await prisma.tarefa.create({
+			data: {
+				titulo,
+				estado: estado || EstadoTarefa.aberta,
+				prioridade: prioridade || PrioridadeTarefa.media,
+				id_projecto: Number(id_projecto),
+				id_utilizador: id_utilizador ? Number(id_utilizador) : null
+			}
+		});
 
-	sse.emitir('tarefa-criada', novaTarefa);
+		sse.emitir('tarefa-criada', novaTarefa);
 
-	return res.status(200).json(novaTarefa);
+		return res.status(200).json(novaTarefa);
+	} catch (error) {
+		if (error.name === 'PrismaClientValidationError') {
+			return res.status(400).json({ error: 'O estado ou a prioridade são inválidos' });
+		}
+		// P2002: Unique constraint falhou no titulo
+		if (error.code === 'P2002') {
+			return res.status(400).json({ error: 'Tarefa com o mesmo titulo já existe' });
+		}	
+		// P2003: Foreign key constraint falhou no id_projecto ou id_utilizador
+		if (error.code === 'P2003') {
+			return res.status(400).json({ error: 'id_projecto ou id_utilizador não existe' });
+		}
+		console.error('Erro ao criar tarefa:', error);
+		return res.status(500).json({ error: 'Erro ao criar tarefa' });
+	}
 });
 
-app.put('/api/tarefas/:id', (req, res) => {
+app.put('/api/tarefas/:id', async (req, res) => {
 	const id = Number(req.params.id);
-	
-	const idx = tarefas.findIndex(t => t.id === id);
-	if (idx === -1) return res.status(404).json({ error: "tarefa não encontrada" });
 
 	const { titulo, estado, prioridade, id_projecto, id_utilizador } = req.body;
 
@@ -463,48 +532,61 @@ app.put('/api/tarefas/:id', (req, res) => {
 		return res.status(400).json({ error: "campos obrigatórios: titulo, estado, prioridade, id_projjecto" });
 	}
 
-	const estadosTarefas = ["aberta", "em_progresso", "concluida", "cancelada"];
+	const estadosTarefas = Object.values(EstadoTarefa);
 	if (!estadosTarefas.includes(estado)) {
 		return res.status(400).json({ error: "estado de tarfea invalido" });
 	}
 
-	const prioridadesTarefas = ["baixa", "media", "alta", "critica"];
+	const prioridadesTarefas = Object.values(PrioridadeTarefa);
 	if (!prioridadesTarefas.includes(prioridade)) {
 		return res.status(400).json({ error: "prioridade de tarfea invalida" });
 	}	
 
-	if (!projectos.find(p => p.id === Number(id_projecto))) {
-		return res.status(400).json({ error: "id_projecto não existe" });
+	try {
+		const tarefaActualizada = await prisma.tarefa.update({
+			where: { id },
+			data: {
+				titulo,
+				estado,
+				prioridade,
+				id_projecto: Number(id_projecto),
+				id_utilizador: id_utilizador ? Number(id_utilizador) : null
+			}
+		});
+
+		sse.emitir('tarefa-actualizada', tarefaActualizada);
+		return res.status(200).json(tarefaActualizada);
+
+	} catch (error) {
+		if (error.code === 'P2025') {
+			return res.status(404).json({ error: 'tarefa não encontrada' });
+		}
+		// P2003: Foreign key constraint falhou no id_projecto ou id_utilizador
+		if (error.code === 'P2003') {
+			return res.status(400).json({ error: 'id_projecto ou id_utilizador não existe' });
+		}
+		console.error('Erro ao atualizar tarefa:', error);
+		return res.status(500).json({ error: 'Erro ao atualizar tarefa' });
 	}
-
-	if (id_utilizador && !utilizadores.find(u => u.id == Number(id_utilizador))) {
-		return res.status(400).json({ error: "id_utilizador não existe" });
-	}
-
-	const tarefaActualizada = {
-		id,
-		titulo,
-		estado,
-		id_projecto: Number(id_projecto),
-		id_utilizador: Number(id_utilizador)
-	}; 
-	tarefas[idx] = tarefaActualizada;
-
-	sse.emitir('tarefa-actualizada', tarefaActualizada);
-	return res.status(200).json(tarefaActualizada);
 });
 
-app.delete('/api/tarefas/:id', (req, res) => {
+app.delete('/api/tarefas/:id', async (req, res) => {
 	const id = Number(req.params.id);
-	const idx = tarefas.findIndex(t => t.id === id);
-	if (idx === -1) {
-		return res.status(404).json({ error: "tarefa não encontrada" });
+
+	try {
+		const tarefaRemovida = await prisma.tarefa.delete({
+			where: { id }
+		});
+		sse.emitir('tarefa-apagada', { id: tarefaRemovida.id });
+		return res.status(204).send();
+	} catch (error) {
+		// P2025: Record to delete does not exist.
+		if (error.code === 'P2025') {
+			return res.status(404).json({ error: 'tarefa não encontrada' });
+		}
+		console.error('Erro ao remover tarefa:', error);
+		return res.status(500).json({ error: 'Erro ao remover tarefa' });
 	}
-
-	const removida = tarefas.splice(idx, 1)[0];
-
-	sse.emitir('tarefa-apagada', { id: removida.id });
-	return res.status(204).send();
 });
 
 // SSE
@@ -530,10 +612,15 @@ app.get('/api/eventos', (req, res) => {
 
 
 app.listen(port, () => {
-  console.log(`\n=========================================================`);
-  console.log(`API do Lab2 a correr:  http://localhost:3002`);
-  console.log(`Endpoint SSE:          http://localhost:3002/api/eventos`);
-  console.log(`Swagger UI (OpenAPI):  http://localhost:3002/api-docs`);
-  console.log(`AsyncAPI Studio:       http://localhost:8001`);
-  console.log(`=========================================================\n`);
+	console.log(`\n==========================================================================`);
+  	console.log(`API do Lab3 a correr (Prisma + Postgres):  http://localhost:3002`);
+  	console.log(`Endpoint SSE:                              http://localhost:3002/api/eventos`);
+  	console.log(`Swagger UI (OpenAPI):                      http://localhost:3002/api-docs`);
+  	console.log(`AsyncAPI Studio:                           http://localhost:8001`);
+  	console.log(`---------------------------------------------------------------------------`);
+	console.log(`Base de Dados (PostgreSQL):`);
+  	console.log(`   Host: localhost | Porta: 5433`);
+  	console.log(`   Base de Dados: lab3db | User: consultar .env | Pass: consultar .env`);
+  	console.log(`   String de conexão: consultar .env`);
+  	console.log(`===========================================================================\n`);
 });
