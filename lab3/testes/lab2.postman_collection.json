@@ -1,0 +1,374 @@
+{
+  "info": {
+    "_postman_id": "277c5be4-cd45-4cb9-8e58-adfcffb310bf",
+    "name": "lab2",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58406161",
+    "_collection_link": "https://go.postman.co/collection/58406161-277c5be4-cd45-4cb9-8e58-adfcffb310bf?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "GET",
+      "item": [
+        {
+          "name": "1. Listar todas as tarefas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code é 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\npm.test(\"Devolve um array\", function () {\r\n    pm.expect(pm.response.json()).to.be.an('array');\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tarefas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tarefas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Obter tarefa inexistente (Caso de Erro / Limite)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code é 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\npm.test(\"Devolve mensagem de erro\", function () {\r\n    pm.expect(pm.response.json()).to.have.property('error');\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tarefas/9999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tarefas",
+                "9999"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "POST",
+      "item": [
+        {
+          "name": "3. Criar nova tarefa (Sucesso)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code é 200\", function () {\r\n    pm.response.to.have.status(200); \r\n});\r\npm.test(\"Guarda o ID criado para os próximos testes\", function () {\r\n    var jsonData = pm.response.json();\r\n    pm.expect(jsonData).to.have.property('id');\r\n    pm.collectionVariables.set(\"tarefa_id\", jsonData.id);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"titulo\": \"Tarefa de Teste Automático\",\r\n    \"prioridade\": \"alta\",\r\n    \"id_projecto\": 1,\r\n    \"id_utilizador\": 2\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tarefas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tarefas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Criar tarefa sem título (Caso Inválido)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code é 400 (Bad Request)\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id_projecto\": 1,\r\n    \"id_utilizador\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tarefas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tarefas"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PUT",
+      "item": [
+        {
+          "name": "5. Atualizar a tarefa criada (Sucesso)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code é 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\npm.test(\"O estado foi atualizado\", function () {\r\n    pm.expect(pm.response.json().estado).to.eql(\"concluida\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"titulo\": \"Tarefa de Teste Automático (Editada)\",\r\n    \"estado\": \"concluida\",\r\n    \"prioridade\": \"critica\",\r\n    \"id_projecto\": 1,\r\n    \"id_utilizador\": 2\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tarefas/{{tarefa_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tarefas",
+                "{{tarefa_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6. Atualizar com estado inválido (Caso de Limite)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code é 400 (Erro de validação)\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"titulo\": \"Teste\",\r\n    \"estado\": \"estado_que_nao_existe\", \r\n    \"prioridade\": \"alta\",\r\n    \"id_projecto\": 1,\r\n    \"id_utilizador\": 2\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tarefas/{{tarefa_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tarefas",
+                "{{tarefa_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sub-recursos",
+      "item": [
+        {
+          "name": "7. Listar tarefas de um projeto (Sucesso)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code é 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\npm.test(\"Todas as tarefas pertencem ao projeto 1\", function () {\r\n    var tarefas = pm.response.json();\r\n    tarefas.forEach(t => pm.expect(t.id_projecto).to.eql(1));\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/projectos/1/tarefas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "projectos",
+                "1",
+                "tarefas"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "DELETE",
+      "item": [
+        {
+          "name": "8. Apagar a tarefa criada (Sucesso)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code é 204 (No Content)\", function () {\r\n    pm.response.to.have.status(204);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tarefas/{{tarefa_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tarefas",
+                "{{tarefa_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "9. Apagar a mesma tarefa outra vez (Caso de Erro)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code é 404 (Já não existe)\", function () {\r\n    pm.response.to.have.status(404);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tarefas/{{tarefa_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tarefas",
+                "{{tarefa_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "SSE",
+      "item": [
+        {
+          "name": "10. Conexão SSE e Trigger",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/event-stream"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/eventos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "eventos"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "tarefa_id",
+      "value": ""
+    }
+  ]
+}
