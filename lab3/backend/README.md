@@ -33,11 +33,11 @@ docker compose exec app npm install <pacote>  # Instalar um novo pacote
 ## Portas e Documentação
 
 O servidor Node.js está configurado para ouvir a porta 3000 dentro do container Docker. O docker-compose.yml mapeia as portas para evitar conflitos com os laboratórios anteriores (Lab1 e Lab2):
-- API REST: http://localhost:3002 (mapeado para a 3000 interna)
-- Endpoint SSE (Eventos): http://localhost:3002/api/eventos
-- Documentação Swagger (OpenAPI): http://localhost:3002/api-docs
-- Documentação AsyncAPI Studio: http://localhost:8001
-- PostgreSQL: localhost:5433 (mapeado para a 5432 interna)
+- **API REST**: http://localhost:3002 (mapeado para a 3000 interna)
+- **Endpoint SSE (Eventos)**: http://localhost:3002/api/eventos
+- **Documentação Swagger (OpenAPI)**: http://localhost:3002/api-docs
+- **Documentação AsyncAPI Studio**: http://localhost:8001
+- **PostgreSQL**: localhost:5433 (mapeado para a 5432 interna)
 
 ### Banner de Arranque
 Para facilitar o desenvolvimento, o servidor imprime um resumo de todos os pontos de acesso no terminal assim que arranca, juntamente com o log do Docker:
