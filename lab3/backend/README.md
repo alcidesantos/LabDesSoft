@@ -58,12 +58,12 @@ app-1     | ====================================================================
 
 ## Base de Dados e Prisma
 
-Os dados residem num volume Docker (lab3_pgdata). Para aceder à base de dados através de uma ferramenta gráfica (DBeaver, pgAdmin) ou do terminal:
+Os dados residem num volume Docker (`lab3_pgdata`). Para aceder à base de dados através de uma ferramenta gráfica (DBeaver, pgAdmin) ou do terminal:
 ### Via DBeaver/pgAdmin (no Windows):
-- Host: localhost
-- Porta: 5433
-- Base de Dados: lab3db
-- User/Password: (verificar ficheiro .env)
+- **Host**: localhost
+- **Porta**: 5433
+- **Base de Dados**: lab3db
+- **User/Password**: (verificar ficheiro .env)
 ### Via terminal (psql):
 ```bash
 docker compose exec db psql -U lab3user -d lab3db
@@ -71,13 +71,13 @@ docker compose exec db psql -U lab3user -d lab3db
 
 ## Ficheiro .env
 
-A string de conexão está definida no ficheiro .env (DATABASE_URL). Este ficheiro está no .gitignore e nunca deve ser commitado para o GitHub.
+A string de conexão está definida no ficheiro `.env` (vDATABASE_URL`). Este ficheiro está no `.gitignore` e nunca deve ser commitado para o GitHub.
 
 ## Comandos úteis do Prisma
 ```bash
 docker compose exec app npx prisma migrate dev --name <nome>  # Criar nova migração
-docker compose exec app npx prisma generate                  # Atualizar o Prisma Client
-docker compose exec app npx prisma studio                    # Abrir interface visual do Prisma
+docker compose exec app npx prisma generate                   # Atualizar o Prisma Client
+docker compose exec app npx prisma studio                     # Abrir interface visual do Prisma
 ```
 
 ## Versão node.js
@@ -133,7 +133,7 @@ docker compose exec app npx prisma studio                    # Abrir interface v
 
 - Consultar /lab2/testes/lab3.postman_collection.json que é autoexplicativo
 
-### O que mudou e porquê:
+## O que mudou e porquê:
 1. **Título e Introdução:** Atualizado para Lab3 e adicionada a menção ao PostgreSQL e Prisma.
 2. **Como correr:** Adicionada a etapa obrigatória de correr as *migrações* (`npx prisma migrate dev`) antes de arrancar a API. Isto é vital para quem clonar o projeto, senão a base de dados está vazia.
 3. **Portas:** Atualizadas para `3002` (API) e `8001` (AsyncAPI). Adicionada a porta `5433` da base de dados.
