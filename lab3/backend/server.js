@@ -4,6 +4,7 @@ const swaggerUi = require('swagger-ui-express');
 const yaml = require('yamljs');
 const swaggerDocument = yaml.load('./openapi.yaml');
 const app = express();
+const prisma = new PrismaClient(); 
 const port = 3000;
 
 const sse = require('./sse');
@@ -617,6 +618,7 @@ app.listen(port, () => {
   	console.log(`Endpoint SSE:                              http://localhost:3002/api/eventos`);
   	console.log(`Swagger UI (OpenAPI):                      http://localhost:3002/api-docs`);
   	console.log(`AsyncAPI Studio:                           http://localhost:8001`);
+	console.log(`Prisma Studio (Base de Dados):             http://localhost:5555`);
   	console.log(`---------------------------------------------------------------------------`);
 	console.log(`Base de Dados (PostgreSQL):`);
   	console.log(`   Host: localhost | Porta: 5433`);

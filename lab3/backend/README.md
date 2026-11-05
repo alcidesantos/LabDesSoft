@@ -8,9 +8,26 @@ Nesta versão, os dados deixaram de estar em memória e passaram a ser persistid
 - Docker Desktop (Windows) com integração WSL ativa
 - WSL
 
-## Como correr
+## Como correr 
 
-A partir desta pasta (`lab3/backend`):
+### Setup Inicial
+
+Na primeira vez que clonas o projeto, ou se alterar o `schema.prisma`, deves preparar a base de dados a partir desta pasta (`lab3/backend`):
+
+```bash
+# 1. Arrancar todos os serviços (API, BD, Studios)
+docker compose up -d
+
+# 2. Aplicar as migrações do Prisma (criar as tabelas na BD)
+docker compose exec app npx prisma migrate dev
+
+# 3. Popular a base de dados com os dados iniciais (Seed)
+docker compose exec app node prisma/seed.js
+```
+
+### Depois do setup inicial
+
+A partir desta pasta (`lab3/backend`), basta correr:
 
 ```bash
 # 1. Arrancar a base de dados (PostgreSQL) em background
@@ -37,17 +54,8 @@ O servidor Node.js está configurado para ouvir a porta 3000 dentro do container
 - **Endpoint SSE (Eventos)**: http://localhost:3002/api/eventos
 - **Documentação Swagger (OpenAPI)**: http://localhost:3002/api-docs
 - **Documentação AsyncAPI Studio**: http://localhost:8001
+- **Prisma Studio (Interface visual da BD)**: http://localhost:5555
 - **PostgreSQL**: localhost:5433 (mapeado para a 5432 interna)
-
-### Justificação da alteração da porta do PostgreSQL
-
-**Nota sobre a porta da Base de Dados (5433)**
-
-Por defeito, o PostgreSQL utiliza a porta 5432. No entanto, o ambiente de desenvolvimento (Windows) já possui uma instância local do PostgreSQL a correr nessa mesma porta.
-
-Para evitar um conflito de portas (Port Collision), que impediria o contentor Docker de arrancar corretamente ou criaria ambiguidade na ligação, optou-se por mapear a porta interna do contentor (5432) para a porta 5433 no host ("5433:5432" no `docker-compose.yml`).
-
-Desta forma, é possível manter a instância nativa do Windows e a instância contentorizada do Lab3 a correr em simultâneo, sem interferências. O Prisma, ao correr dentro da rede do Docker, comunica internamente com a porta 5432 (através do nome do serviço db), pelo que o código da aplicação não precisou de ser alterado para acomodar esta mudança.
 
 ### Banner de Arranque
 Para facilitar o desenvolvimento, o servidor imprime um resumo de todos os pontos de acesso no terminal assim que arranca, juntamente com o log do Docker:
@@ -58,6 +66,7 @@ app-1     | API do Lab3 a correr (Prisma + Postgres):  http://localhost:3002
 app-1     | Endpoint SSE:                              http://localhost:3002/api/eventos
 app-1     | Swagger UI (OpenAPI):                      http://localhost:3002/api-docs
 app-1     | AsyncAPI Studio:                           http://localhost:8001
+app-1     | Prisma Studio (Base de Dados):             http://localhost:5555
 app-1     | --------------------------------------------------------------------------
 app-1     | Base de Dados (PostgreSQL):
 app-1     |    Host: localhost | Porta: 5433
@@ -66,7 +75,7 @@ app-1     |    String de conexão: consultar .env
 app-1     | ===========================================================================
 ```
 
-## Base de Dados e Prisma
+## Base de Dados, Prisma e Seed
 
 Os dados residem num volume Docker (`lab3_pgdata`). Para aceder à base de dados através de uma ferramenta gráfica (DBeaver, pgAdmin) ou do terminal:
 ### Via DBeaver/pgAdmin (no Windows):
@@ -94,7 +103,33 @@ docker compose exec app npx prisma studio                     # Abrir interface 
 
 - v24.21.0
 
-## Segundo Recurso
+## Modelos de Dados
+
+### Prisma Schema
+
+* **Enums**: O modelo de dados utiliza Enums para garantir a integridade dos estados:
+  * EstadoTarefa: aberta, em_progresso, concluida, cancelada
+  * PrioridadeTarefa: baixa, media, alta, critica
+
+* **Tabelas**
+  * ***Utilizador:***
+    * id: inteiro (autoincrement)
+    * nome: string
+    * email: string (unique)
+  * ***Projecto:***
+    * id: inteiro (autoincrement)
+    * nome: string
+    * descricao: string
+    * estado: string
+  * ***Tarefa:***
+    * id: inteiro (autoincrement)
+    * titulo: string
+    * estado: EstadoTarefa
+    * prioridade: PrioridadeTarefa
+    * id_projecto: inteiro (FK)
+    * id_utilizador: inteiro (FK opcional)
+
+### Segundo Recurso (resquício do lab1)
 
 * **Domínio**: dominio
 * **Campos**:
@@ -103,7 +138,7 @@ docker compose exec app npx prisma studio                     # Abrir interface 
   * estados: (estado1, estado2, estado3) 
   * gerado: new Date()
 
-## Cenário de tarefas com projectos e utilizadores
+### Cenário de tarefas com projectos e utilizadores
 
 * **Domínio**: Cenário de tarefas com projectos e utilizadores
 * **Endpoints**:
@@ -136,19 +171,24 @@ docker compose exec app npx prisma studio                     # Abrir interface 
 
 ## Declaração de utilização de IA
 
-- Link para interacção com IA https://chat.deepseek.com/share/8tfcrqsp45gpdzuril que consiste no seguimento do lab1, mantendo assim o contexto no diálogo coma a IA. A interação com a IA foi usada várias vezes como ponto de partida para a realização do laboratório. Tipicamente começo qualquer trabalho (de programação e não só) com um outro que tenha uma estrutura sememlhante e vou ajustando para a realidade que tenho pela frente. Há dezenas de anos era com um exemplo tirado de um livro. Depois, com um exemplo tirado de uma disquete. Mais tarde, com um exemplo tirado de algum site na Internet. Agora, é com algo extraído da IA. continua a ser a mesma forma de proceder.
+- Link para interacção com IA https://chat.deepseek.com/share/jvy319rvy2rx2ql4yx que consiste no seguimento do lab1 e lab2 mantendo assim o contexto no diálogo coma a IA. A interação com a IA foi usada várias vezes como ponto de partida para a realização do laboratório. Tipicamente começo qualquer trabalho (de programação e não só) com um outro que tenha uma estrutura sememlhante e vou ajustando para a realidade que tenho pela frente. Há dezenas de anos era com um exemplo tirado de um livro. Depois, com um exemplo tirado de uma disquete. Mais tarde, com um exemplo tirado de algum site na Internet. Agora, é com algo extraído da IA. continua a ser a mesma forma de proceder.
 - Voltei a activar o autocomplete do VSC
 
 ## Testes e evidências
 
-- Consultar /lab2/testes/lab3.postman_collection.json que é autoexplicativo
+- Consultar /lab3/testes/lab3.postman_collection.json que é autoexplicativo
 
-## O que mudou e porquê:
-1. **Título e Introdução:** Atualizado para Lab3 e adicionada a menção ao PostgreSQL e Prisma.
-2. **Como correr:** Adicionada a etapa obrigatória de correr as *migrações* (`npx prisma migrate dev`) antes de arrancar a API. Isto é vital para quem clonar o projeto, senão a base de dados está vazia.
-3. **Portas:** Atualizadas para `3002` (API) e `8001` (AsyncAPI). Adicionada a porta `5433` da base de dados.
-4. **Base de Dados:** Nova secção a explicar como ligar-se à BD usando o DBeaver/pgAdmin ou o `psql`, e um alerta sobre o `.env`.
-5. **Modelos:** Atualizei a secção de campos para refletir os modelos exatos do `schema.prisma` (ex: `id` autoincrement, `email` unique).
+## Justificação de Decisões Técnicas
+
+### Alteração da porta do PostgreSQL
+
+O ambiente Windows já possui uma instância local do PostgreSQL a correr na porta padrão (5432). Para evitar conflitos de rede (port collision), o contentor mapeia a porta interna 5432 para a 5433 no host. O Prisma comunica internamente na rede Docker usando o hostname db e a porta 5432, pelo que a aplicação não sofre alterações.
+
+### Porquê um Dockerfile customizado?
+
+A imagem node:24-slim não inclui o OpenSSL por defeito. O Prisma requer o OpenSSL para estabelecer ligações seguras (TLS) à base de dados. O Dockerfile instala essa dependência para garantir o correto funcionamento da app e do Prisma Studio.
+
+
 
 
 

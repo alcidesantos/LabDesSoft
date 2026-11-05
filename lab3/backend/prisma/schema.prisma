@@ -39,8 +39,8 @@ model Projecto {
 model Tarefa {
   id            Int        @id @default(autoincrement())
   titulo        String
-  estado        EstadoTarefa     @default("aberta")
-  prioridade    PrioridadeTarefa     @default("media")
+  estado        EstadoTarefa     @default(aberta)
+  prioridade    PrioridadeTarefa     @default(media)
   
   // Relações com chaves estrangeiras
   id_projecto   Int
