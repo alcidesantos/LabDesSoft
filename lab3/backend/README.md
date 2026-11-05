@@ -55,7 +55,7 @@ O servidor Node.js está configurado para ouvir a porta 3000 dentro do container
 - **Documentação Swagger (OpenAPI)**: http://localhost:3002/api-docs
 - **Documentação AsyncAPI Studio**: http://localhost:8001
 - **Prisma Studio (Interface visual da BD)**: http://localhost:5555
-- **PostgreSQL**: localhost:5433 (mapeado para a 5432 interna)
+- **PostgreSQL**: http://localhost:5433 (mapeado para a 5432 interna)
 
 ### Banner de Arranque
 Para facilitar o desenvolvimento, o servidor imprime um resumo de todos os pontos de acesso no terminal assim que arranca, juntamente com o log do Docker:
@@ -151,23 +151,6 @@ docker compose exec app npx prisma studio                     # Abrir interface 
   * /api/utilizadores/{id}
   * /api/utilizadores/{id}/tarefas
   * /api/eventos
-* **Campos**: 
-  * ***tarefa***:
-    * id: inteiro
-    * titulo: string
-    * estado: (aberta, em_progresso, concluida, cancelada)
-    * prioridade: (alta, baixa, media, alta, critica)
-    * id_projecto: inteiro
-    * id_utilizador: inteiro
-  * ***projectos***:
-    * id: inteiro 
-    * nome: string
-    * descricao: string
-    * estado: (activo, arquivado, cancelado)~
-  * ***utilizadores***:
-    * id: inteiro 
-    * nome: string 
-    * email: string
 
 ## Declaração de utilização de IA
 

@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "277c5be4-cd45-4cb9-8e58-adfcffb310bf",
-    "name": "lab2",
+    "_postman_id": "c8e64958-2703-4b1b-a300-2563045a14a8",
+    "name": "lab3",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "58406161",
-    "_collection_link": "https://go.postman.co/collection/58406161-277c5be4-cd45-4cb9-8e58-adfcffb310bf?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/58406161-c8e64958-2703-4b1b-a300-2563045a14a8?source=collection_link"
   },
   "item": [
     {
@@ -92,7 +92,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"titulo\": \"Tarefa de Teste Automático\",\r\n    \"prioridade\": \"alta\",\r\n    \"id_projecto\": 1,\r\n    \"id_utilizador\": 2\r\n}",
+              "raw": "{\r\n    \"titulo\": \"Tarefa de Teste Automático\",\r\n    \"prioridade\": \"alta\",\r\n    \"id_projecto\": 5,\r\n    \"id_utilizador\": 6\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -173,7 +173,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"titulo\": \"Tarefa de Teste Automático (Editada)\",\r\n    \"estado\": \"concluida\",\r\n    \"prioridade\": \"critica\",\r\n    \"id_projecto\": 1,\r\n    \"id_utilizador\": 2\r\n}",
+              "raw": "{\r\n    \"titulo\": \"Tarefa de Teste Automático (Editada)\",\r\n    \"estado\": \"concluida\",\r\n    \"prioridade\": \"critica\",\r\n    \"id_projecto\": 5,\r\n    \"id_utilizador\": 6\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -255,14 +255,14 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/projectos/1/tarefas",
+              "raw": "{{baseUrl}}/api/projectos/5/tarefas",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "projectos",
-                "1",
+                "5",
                 "tarefas"
               ]
             }
