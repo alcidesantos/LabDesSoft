@@ -39,6 +39,16 @@ O servidor Node.js está configurado para ouvir a porta 3000 dentro do container
 - **Documentação AsyncAPI Studio**: http://localhost:8001
 - **PostgreSQL**: localhost:5433 (mapeado para a 5432 interna)
 
+### Justificação da alteração da porta do PostgreSQL
+
+**Nota sobre a porta da Base de Dados (5433)**
+
+Por defeito, o PostgreSQL utiliza a porta 5432. No entanto, o ambiente de desenvolvimento (Windows) já possui uma instância local do PostgreSQL a correr nessa mesma porta.
+
+Para evitar um conflito de portas (Port Collision), que impediria o contentor Docker de arrancar corretamente ou criaria ambiguidade na ligação, optou-se por mapear a porta interna do contentor (5432) para a porta 5433 no host ("5433:5432" no docker-compose.yml).
+
+Desta forma, é possível manter a instância nativa do Windows e a instância contentorizada do Lab3 a correr em simultâneo, sem interferências. O Prisma, ao correr dentro da rede do Docker, comunica internamente com a porta 5432 (através do nome do serviço db), pelo que o código da aplicação não precisou de ser alterado para acomodar esta mudança.
+
 ### Banner de Arranque
 Para facilitar o desenvolvimento, o servidor imprime um resumo de todos os pontos de acesso no terminal assim que arranca, juntamente com o log do Docker:
 
@@ -71,7 +81,7 @@ docker compose exec db psql -U lab3user -d lab3db
 
 ## Ficheiro .env
 
-A string de conexão está definida no ficheiro `.env` (vDATABASE_URL`). Este ficheiro está no `.gitignore` e nunca deve ser commitado para o GitHub.
+A string de conexão está definida no ficheiro `.env` (`DATABASE_URL`). Este ficheiro está no `.gitignore` e nunca deve ser commitado para o GitHub.
 
 ## Comandos úteis do Prisma
 ```bash
