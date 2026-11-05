@@ -23,10 +23,10 @@ docker compose exec app npx prisma migrate dev
 docker compose up
 
 # Outros comandos úteis:
-docker compose up -d               # Arrancar tudo em background
-docker compose logs -f app         # Ver logs da API em direto
-docker compose down                # Parar tudo
-docker compose exec app sh         # Abrir um shell no container Node
+docker compose up -d                          # Arrancar tudo em background
+docker compose logs -f app                    # Ver logs da API em direto
+docker compose down                           # Parar tudo
+docker compose exec app sh                    # Abrir um shell no container Node
 docker compose exec app npm install <pacote>  # Instalar um novo pacote
 ```
 
@@ -45,7 +45,7 @@ O servidor Node.js está configurado para ouvir a porta 3000 dentro do container
 
 Por defeito, o PostgreSQL utiliza a porta 5432. No entanto, o ambiente de desenvolvimento (Windows) já possui uma instância local do PostgreSQL a correr nessa mesma porta.
 
-Para evitar um conflito de portas (Port Collision), que impediria o contentor Docker de arrancar corretamente ou criaria ambiguidade na ligação, optou-se por mapear a porta interna do contentor (5432) para a porta 5433 no host ("5433:5432" no docker-compose.yml).
+Para evitar um conflito de portas (Port Collision), que impediria o contentor Docker de arrancar corretamente ou criaria ambiguidade na ligação, optou-se por mapear a porta interna do contentor (5432) para a porta 5433 no host ("5433:5432" no `docker-compose.yml`).
 
 Desta forma, é possível manter a instância nativa do Windows e a instância contentorizada do Lab3 a correr em simultâneo, sem interferências. O Prisma, ao correr dentro da rede do Docker, comunica internamente com a porta 5432 (através do nome do serviço db), pelo que o código da aplicação não precisou de ser alterado para acomodar esta mudança.
 
